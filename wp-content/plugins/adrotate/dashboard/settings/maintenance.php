@@ -9,7 +9,11 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('Maintenance', 'adrotate'); ?></h3>
+<form name="settings" id="post" method="post" action="admin.php?page=adrotate-settings&tab=maintenance">
+<?php wp_nonce_field('adrotate_settings','adrotate_nonce_settings'); ?>
+<input type="hidden" name="adrotate_settings_tab" value="<?php echo $active_tab; ?>" />
+
+<h2><?php _e('Maintenance', 'adrotate'); ?></h2>
 <span class="description"><?php _e('Use these functions when you notice your database is slow, unresponsive and sluggish.', 'adrotate'); ?></span>
 <table class="form-table">			
 	<tr>
@@ -55,29 +59,46 @@
 <h3><?php _e('Status and Versions', 'adrotate'); ?></h3>
 <table class="form-table">			
 	<tr>
-		<td><?php _e('Current version:', 'adrotate'); ?> <?php echo $adrotate_version['current']; ?></td>
-		<td><?php _e('Previous version:', 'adrotate'); ?> <?php echo $adrotate_version['previous']; ?></td>
+		<th valign="top"><?php _e('Current status of adverts', 'adrotate'); ?></th>
+		<td colspan="3"><?php _e('Normal', 'adrotate'); ?>: <?php echo $advert_status['normal']; ?>, <?php _e('Error', 'adrotate'); ?>: <?php echo $advert_status['error']; ?>, <?php _e('Expired', 'adrotate'); ?>: <?php echo $advert_status['expired']; ?>, <?php _e('Expires Soon', 'adrotate'); ?>: <?php echo $advert_status['expiressoon']; ?>, <?php _e('Unknown', 'adrotate'); ?>: <?php echo $advert_status['unknown']; ?>.</td>
 	</tr>
 	<tr>
-		<td><?php _e('Current database version:', 'adrotate'); ?> <?php echo $adrotate_db_version['current']; ?></td>
-		<td><?php _e('Previous database version:', 'adrotate'); ?> <?php echo $adrotate_db_version['previous']; ?></td>
-	</tr>
-	<tr>
-		<td valign="top"><?php _e('Current status of adverts', 'adrotate'); ?></td>
-		<td><?php _e('Normal', 'adrotate'); ?>: <?php echo $adrotate_advert_status['normal']; ?>, <?php _e('Error', 'adrotate'); ?>: <?php echo $adrotate_advert_status['error']; ?>, <?php _e('Expired', 'adrotate'); ?>: <?php echo $adrotate_advert_status['expired']; ?>, <?php _e('Expires Soon', 'adrotate'); ?>: <?php echo $adrotate_advert_status['expiressoon']; ?>, <?php _e('Unknown', 'adrotate'); ?>: <?php echo $adrotate_advert_status['unknown']; ?>.</td>
-	</tr>
-	<tr>
-		<td><?php _e('Banners/assets Folder', 'adrotate-pro'); ?></td>
+		<th width="15%"><?php _e('Banners/assets Folder', 'adrotate'); ?></th>
 		<td>
-			<?php echo (is_writable(ABSPATH.'wp-content/banners/')) ? '<span style="color:#009900;">'.__('Exists and appears writable', 'adrotate-pro').'</span>' : '<span style="color:#CC2900;">'.__('Not writable or does not exist', 'adrotate-pro').'</span>'; ?>
+			<?php echo (is_writeable(ABSPATH.$adrotate_config['banner_folder'])) ? '<span style="color:#009900;">'.__('Exists and appears writable', 'adrotate-pro').'</span>' : '<span style="color:#CC2900;">'.__('Not writable or does not exist', 'adrotate-pro').'</span>'; ?>
+		</td>
+		<th width="15%"><?php _e('Reports Folder', 'adrotate'); ?></th>
+		<td>
+			<?php echo (is_writable(ABSPATH.'wp-content/reports/')) ? '<span style="color:#009900;">'.__('Exists and appears writable', 'adrotate-pro').'</span>' : '<span style="color:#CC2900;">'.__('Not writable or does not exist', 'adrotate-pro').'</span>'; ?>
 		</td>
 	</tr>
 	<tr>
-		<td><?php _e('Ad evaluation next run:', 'adrotate'); ?></td>
-		<td><?php if(!$adevaluate) _e('Not scheduled!', 'adrotate'); else echo date_i18n(get_option('date_format')." H:i", $adevaluate); ?></td>
-	</tr>
-	<tr>
-		<td><?php _e('Clean Trackerdata next run:', 'adrotate'); ?></td>
-		<td><?php if(!$adtracker) _e('Not scheduled!', 'adrotate'); else echo date_i18n(get_option('date_format')." H:i", $adtracker); ?></td>
+		<th width="15%"><?php _e('Advert evaluation', 'adrotate'); ?></th>
+		<td><?php if(!$adevaluate) '<span style="color:#CC2900;">'._e('Not scheduled! Re-activate the plugin from the plugins page.', 'adrotate-pro').'</span>'; else echo '<span style="color:#009900;">'.date_i18n(get_option('date_format')." H:i", $adevaluate).'</span>'; ?></td>
+		<th width="15%">&nbsp;</th>
+		<td>&nbsp;</td>
 	</tr>
 </table>
+
+<h2><?php _e('Internal Versions', 'adrotate'); ?></h2>
+<span class="description"><?php _e('Unless you experience database issues or a warning shows below, these numbers are not really relevant for troubleshooting. Support may ask for them to verify your database status.', 'adrotate'); ?></span>
+<table class="form-table">			
+	<tr>
+		<th width="15%" valign="top"><?php _e('AdRotate version', 'adrotate'); ?></th>
+		<td><?php _e('Current:', 'adrotate'); ?> <?php echo '<span style="color:#009900;">'.$adrotate_version['current'].'</span>'; ?> <?php if($adrotate_version['current'] != ADROTATE_VERSION) { echo '<span style="color:#CC2900;">'; _e('Should be:', 'adrotate'); echo ' '.ADROTATE_VERSION; echo '</span>'; } ?><br /><?php _e('Previous:', 'adrotate'); ?> <?php echo $adrotate_version['previous']; ?></td>
+		<th width="15%" valign="top"><?php _e('Database version', 'adrotate'); ?></th>
+		<td><?php _e('Current:', 'adrotate'); ?> <?php echo '<span style="color:#009900;">'.$adrotate_db_version['current'].'</span>'; ?> <?php if($adrotate_db_version['current'] != ADROTATE_DB_VERSION) { echo '<span style="color:#CC2900;">'; _e('Should be:', 'adrotate'); echo ' '.ADROTATE_DB_VERSION; echo '</span>'; } ?><br /><?php _e('Previous:', 'adrotate'); ?> <?php echo $adrotate_db_version['previous']; ?></td>
+	</tr>
+	<tr>
+		<th valign="top">Manual upgrade</th>
+		<td colspan="3">
+			<a class="button" href="admin.php?page=adrotate&upgrade=1" onclick="return confirm('<?php _e('YOU ARE ABOUT TO DO A MANUAL UPDATE FOR ADROTATE.', 'adrotate'); ?>\n<?php _e('Make sure you have a database backup!', 'adrotate'); ?>\n\n<?php _e('This might take a while and may slow down your site during this action!', 'adrotate'); ?>\n\n<?php _e('OK to continue, CANCEL to stop.', 'adrotate'); ?>')">Run Updater</a><br />
+			<span class="description"><?php _e('Attempt to update the database and migrate settings where required or relevant. Normally you should not need or use this option.', 'adrotate'); ?></span>
+		</td>
+	</tr>
+</table>
+
+<p class="submit">
+  	<input type="submit" name="adrotate_save_options" class="button-primary" value="<?php _e('Update Options', 'adrotate'); ?>" />
+</p>
+</form>

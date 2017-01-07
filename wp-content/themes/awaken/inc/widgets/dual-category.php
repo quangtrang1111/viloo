@@ -196,7 +196,7 @@ class Awaken_Dual_Category_Posts extends WP_Widget {
 								<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title(); ?>"><img  src="<?php echo get_template_directory_uri(); ?>/images/thumbnail-default.jpg" alt="<?php the_title(); ?>" /></a>
 							<?php } ?>
 
-						<?php the_title( sprintf( '<h1 class="genpost-entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h1>' ); ?>						
+						<?php the_title( sprintf( '<h3 class="genpost-entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>						
 						<?php if ( 'post' == get_post_type() ) : ?>
 							<div class="genpost-entry-meta">
 								<?php awaken_posted_on(); ?>
@@ -222,7 +222,7 @@ class Awaken_Dual_Category_Posts extends WP_Widget {
 								<?php } ?>
 							</div>
 							<div class="ams-details">
-								<?php the_title( sprintf( '<h1 class="ams-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h1>' ); ?>
+								<?php the_title( sprintf( '<h3 class="ams-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>
 								<p class="ams-meta"><?php the_time('F j, Y'); ?></p>
 							</div>
 						</div>
@@ -256,7 +256,7 @@ class Awaken_Dual_Category_Posts extends WP_Widget {
 								<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title(); ?>"><img  src="<?php echo get_template_directory_uri(); ?>/images/thumbnail-default.jpg" alt="<?php the_title(); ?>" /></a>
 							<?php } ?>
 
-						<?php the_title( sprintf( '<h1 class="genpost-entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h1>' ); ?>						
+						<?php the_title( sprintf( '<h3 class="genpost-entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>						
 						<?php if ( 'post' == get_post_type() ) : ?>
 							<div class="genpost-entry-meta">
 								<?php awaken_posted_on(); ?>
@@ -282,7 +282,7 @@ class Awaken_Dual_Category_Posts extends WP_Widget {
 								<?php } ?>
 							</div>
 							<div class="ams-details">
-								<?php the_title( sprintf( '<h1 class="ams-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h1>' ); ?>
+								<?php the_title( sprintf( '<h3 class="ams-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>
 								<p class="ams-meta"><?php the_time('F j, Y'); ?></p>
 							</div>
 						</div>

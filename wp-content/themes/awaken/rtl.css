@@ -221,6 +221,11 @@ textarea {
 .fr {
   text-align: left;
 }
+@media all and (max-width:768px) {
+  .footer-site-info .fr {
+    text-align: right;
+  }
+}
 .byline:before {
   margin: 0 15px 0 10px;
 }
@@ -314,4 +319,12 @@ textarea {
 }
 .flex-direction-nav .flex-prev {
 	left: 5px;
+}
+.search-form .search-submit {
+    right: auto;
+    left: 0;
+}
+
+.search-form .search-field {
+    padding: 10px 10px 10px 80px;
 }

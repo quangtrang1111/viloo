@@ -13,23 +13,19 @@ $title = $wpdb->get_var("SELECT `name` FROM `".$wpdb->prefix."adrotate_groups` W
 $stats = $wpdb->get_row("SELECT SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `".$wpdb->prefix."adrotate_stats` WHERE `group` = '$group_edit_id';", ARRAY_A);
 $stats_today = $wpdb->get_row("SELECT `clicks`, `impressions` FROM `".$wpdb->prefix."adrotate_stats` WHERE `group` = '$group_edit_id' AND `thetime` = '$today';", ARRAY_A);
 
+$stats_graph_month = $wpdb->get_row("SELECT SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `{$wpdb->prefix}adrotate_stats` WHERE `group` = {$group_edit_id} AND `thetime` >= {$monthstart} AND `thetime` <= {$monthend};", ARRAY_A);
+
 // Get Click Through Rate
 $ctr = adrotate_ctr($stats['clicks'], $stats['impressions']);						
+$ctr_graph_month = adrotate_ctr($stats_graph_month['clicks'], $stats_graph_month['impressions']);
 
 // Prevent gaps in display
 if(empty($stats['impressions'])) $stats['impressions'] = 0;
 if(empty($stats['clicks']))	$stats['clicks'] = 0;
 if(empty($stats_today['impressions'])) $stats_today['impressions'] = 0;
 if(empty($stats_today['clicks'])) $stats_today['clicks'] = 0;
-
-if($adrotate_debug['publisher'] == true) {
-	echo "<p><strong>[DEBUG] Group (all time)</strong><pre>";
-	print_r($stats); 
-	echo "</pre></p>"; 
-	echo "<p><strong>[DEBUG] Group (today)</strong><pre>";
-	print_r($stats_today); 
-	echo "</pre></p>"; 
-}	
+if(empty($stats_graph_month['impressions'])) $stats_graph_month['impressions'] = 0;
+if(empty($stats_graph_month['clicks'])) $stats_graph_month['clicks'] = 0;
 ?>
 
 <h3><?php _e('Statistics for group', 'adrotate'); ?> '<?php echo $title; ?>'</h3>
@@ -51,12 +47,17 @@ if($adrotate_debug['publisher'] == true) {
 <table class="widefat" style="margin-top: .5em">
 
 	<tbody>
-  	<tr>
+	<tr>
         <th colspan="5">
         	<div style="text-align:center;"><?php echo adrotate_stats_nav('groups', $group_edit_id, $month, $year); ?></div>
         	<?php echo adrotate_stats_graph('groups', $group_edit_id, 1, $monthstart, $monthend); ?>
         </th>
-  	</tr>
+	</tr>
+	<tr>
+        <td width="33%"><div class="stats_large"><?php _e('Impressions', 'adrotate'); ?><br /><div class="number_large"><?php echo $stats_graph_month['impressions']; ?></div></div></td>
+        <td width="33%"><div class="stats_large"><?php _e('Clicks', 'adrotate'); ?><br /><div class="number_large"><?php echo $stats_graph_month['clicks']; ?></div></div></td>
+        <td width="34%"><div class="stats_large"><?php _e('CTR', 'adrotate'); ?><br /><div class="number_large"><?php echo $ctr_graph_month; ?> %</div></div></td>
+	</tr>
 	</tbody>
 
 </table>	

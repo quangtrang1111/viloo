@@ -5,6 +5,11 @@
  * ======================================================================
  */
 
+/**
+ * 
+ * @param {type} $
+ * @returns {undefined}
+ */
 (function ($) {
 
     /**
@@ -23,6 +28,7 @@
          * Different UI hooks
          */
         this.hooks = {};
+        
     }
 
     /**
@@ -56,7 +62,7 @@
             }
         }
     };
-
+    
     /**
      * Initialize the AAM
      * 
@@ -67,7 +73,8 @@
         this.setSubject(
                 aamLocal.subject.type, 
                 aamLocal.subject.id,
-                aamLocal.subject.name
+                aamLocal.subject.name,
+                aamLocal.subject.level
         );
         
         //load the UI javascript support
@@ -77,50 +84,20 @@
         $('.aam-help-menu').each(function() {
             var target = $(this).data('target');
             
-            $(this).bind('click', function() {
-                if ($(this).hasClass('active')) {
-                    $('.aam-help-context', target).removeClass('active');
-                    $('.aam-postbox-inside', target).show();
-                    $(this).removeClass('active');
-                } else {
-                    $('.aam-postbox-inside', target).hide();
-                    $('.aam-help-context', target).addClass('active');
-                    $(this).addClass('active');
-                }
-            });
-        });
-        
-        //welcome message
-        if (parseInt(aamLocal.welcome) === 1) {
-            $('.aam-welcome-message').toggleClass('active');
-            $('.wrap').css('visibility', 'hidden');
-            $('#confirm-welcome').bind('click', function (event) {
-                event.preventDefault();
-                
-                $('i', $(this)).attr('class', 'icon-spin4 animate-spin');
-                
-                $.ajax(aamLocal.ajaxurl, {
-                    type: 'POST',
-                    dataType: 'json',
-                    data: {
-                        action: 'aam',
-                        sub_action: 'confirmWelcome',
-                        _ajax_nonce: aamLocal.nonce
-                    },
-                    beforeSend: function () {
-                        $('.aam-welcome-message').toggleClass('active');
-                        setTimeout(function() {
-                            $('.aam-welcome-message').remove();
-                        }, 1500);
-                    },
-                    complete: function () {
-                        $('.wrap').css('visibility', 'visible');
+            if (target) {
+                $(this).bind('click', function() {
+                    if ($(this).hasClass('active')) {
+                        $('.aam-help-context', target).removeClass('active');
+                        $('.aam-postbox-inside', target).show();
+                        $(this).removeClass('active');
+                    } else {
+                        $('.aam-postbox-inside', target).hide();
+                        $('.aam-help-context', target).addClass('active');
+                        $(this).addClass('active');
                     }
                 });
-            });
-        } else {
-            $('.aam-welcome-message').remove();
-        }
+            }
+        });
         
         //help tooltips
         $('body').delegate('[data-toggle="tooltip"]', 'hover', function (event) {
@@ -130,37 +107,6 @@
                 'container' : 'body'
             });
             $(this).tooltip('show');
-        });
-        
-        //if there is an error detected during the AAM load, show it
-        if (typeof AAM_PageError !== 'undefined' && AAM_PageError) {
-            $('.aam-error-list').append(
-                $('<li/>').html(
-                    this.__('Javascript error detected during the page load. AAM may not function properly.')
-                )
-            );
-            $('.aam-notification-container').removeClass('hidden');
-        }
-        
-        //Error Fix promotion code
-        $.ajax(aamLocal.ajaxurl, {
-            type: 'POST',
-            dataType: 'json',
-            data: {
-                action: 'aam',
-                sub_action: 'getErrorFixStatus',
-                _ajax_nonce: aamLocal.nonce
-            },
-            success: function (response) {
-                if (response.status === 'show') {
-                    $('#errorfix-promotion').removeClass('hidden');
-                    $('#errorfix-install-btn').attr(
-                            'href', response.url.replace(/&amp;/g, '&')
-                    );
-                } else {
-                    $('#errorfix-promotion').remove();
-                }
-            }
         });
     };
 
@@ -179,17 +125,26 @@
      * @param {type} id
      * @returns {undefined}
      */
-    AAM.prototype.setSubject = function (type, id, name) {
+    AAM.prototype.setSubject = function (type, id, name, level) {
         this.subject = {
             type: type,
             id: id,
-            name: name
+            name: name,
+            level: level
         };
         
         //update the header
+        var subject = type.charAt(0).toUpperCase() + type.slice(1);
         $('.aam-current-subject').html(
-                aam.__('Current ' + type) + ': <strong>' + name + '</strong>'
+                aam.__(subject) + ': <strong>' + name + '</strong>'
         );
+
+        //highlight screen if the same level
+        if (parseInt(level) >= aamLocal.level) {
+            $('.aam-current-subject').addClass('danger');
+        } else {
+            $('.aam-current-subject').removeClass('danger');
+        }
 
         this.triggerHook('setSubject');
     };
@@ -209,14 +164,14 @@
      * @returns {undefined}
      */
     AAM.prototype.notification = function (status, message) {
-        var notification = $('<div/>', {'class': 'aam-sticky-note'});
-        notification.append(
-                $('<span/>', {'class': 'text-' + status}).text(message)
-                );
+        var notification = $('<div/>', {'class': 'aam-sticky-note ' + status});
+        
+        notification.append($('<span/>').text(message));
         $('.wrap').append(notification);
+        
         setTimeout(function () {
             $('.aam-sticky-note').remove();
-        }, 5000);
+        }, 9000);
     };
     
     /**
@@ -254,6 +209,22 @@
         });
         
         return result;
+    };
+    
+    /**
+     * 
+     * @param {type} el
+     * @returns {undefined}
+     */
+    AAM.prototype.readMore = function(el) {
+        $(el).append($('<a/>').attr({
+            'href'  : '#',
+            'class' : 'aam-readmore' 
+        }).text('Read More').bind('click', function(event){
+            event.preventDefault();
+            $(this).hide();
+            $(el).append('<span>' + $(el).data('readmore') + '</span>');
+        }));
     };
 
     /**

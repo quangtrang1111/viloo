@@ -107,7 +107,7 @@ class Awaken_Tabbed_Widget extends WP_Widget {
 						<?php } ?>
 					</div>
 					<div class="ams-details">
-						<?php the_title( sprintf( '<h1 class="ams-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h1>' ); ?>
+						<?php the_title( sprintf( '<h3 class="ams-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>
 						<p class="ams-meta"><?php the_time('F j, Y'); ?></p>
 					</div>
 				</div>

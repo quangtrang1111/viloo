@@ -6,6 +6,9 @@
 
 	delete_option('mo_openid_host_name');
 	delete_option('mo_openid_new_registration');
+	delete_option( 'mo_openid_admin_company_name');
+	delete_option( 'mo_openid_admin_first_name');
+	delete_option( 'mo_openid_admin_last_name');
 	delete_option('mo_openid_admin_email');
 	delete_option('mo_openid_admin_password');
 	delete_option('mo_openid_admin_phone');
@@ -51,8 +54,15 @@
 	delete_option( 'mo_openid_login_widget_customize_text');
 	delete_option( 'mo_openid_share_widget_customize_text' );
 	delete_option( 'mo_openid_login_button_customize_text');
+	delete_option( 'mo_login_icon_custom_boundary' );
 	delete_option('mo_share_options_wc_sp_summary_top');
 	delete_option('mo_share_options_wc_sp_summary');
+	delete_option('mo_share_options_bb_forum');
+	delete_option('mo_share_options_bb_forum_position');
+	delete_option('mo_share_options_bb_topic');
+	delete_option('mo_share_options_bb_topic_position');
+	delete_option('mo_share_options_bb_reply');
+	delete_option('mo_share_options_bb_reply_position');
 	delete_option( 'mo_openid_google_share_enable');
 	delete_option( 'mo_openid_facebook_share_enable');
 	delete_option( 'mo_openid_linkedin_share_enable' );
@@ -67,6 +77,11 @@
 	delete_option( 'mo_openid_digg_share_enable' );
 	delete_option( 'mo_openid_pocket_share_enable' );
 	delete_option( 'mo_openid_vkontakte_share_enable' );
+	delete_option('mo_openid_mail_share_enable');
+	delete_option('mo_openid_print_share_enable');
+	delete_option('mo_openid_whatsapp_share_enable');
+	delete_option( 'mo_openid_admin_customer_valid');
+	delete_option( 'mo_openid_admin_customer_plan');
 	
 	delete_option('mo_login_icon_custom_size');
 	delete_option('mo_login_icon_space' );
@@ -78,6 +93,9 @@
 	delete_option('mo_share_options_home_page_position');
 	delete_option('mo_share_options_static_pages_position');
 	delete_option('mo_openid_share_twitter_username');
+	delete_option( 'mo_openid_share_email_subject' );
+	delete_option( 'mo_openid_share_email_body' );
+	delete_option('mo_share_vertical_hide_mobile');
 	
 	delete_option('mo_sharing_icon_custom_size');
 	delete_option('mo_sharing_icon_custom_color');
@@ -90,4 +108,8 @@
 	delete_option('mo_openid_logout_redirect_url');
 	delete_option('mo_openid_sms_otp_count');
 	delete_option('mo_openid_email_otp_count');
+	delete_option('mo_openid_login_role_mapping');
+	
+	delete_option( 'mo_openid_login_widget_customize_logout_name_text');
+	delete_option( 'mo_openid_login_widget_customize_logout_text');
 ?>

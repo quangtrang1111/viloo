@@ -19,7 +19,7 @@
 			<select name="adrotate_action" id="cat" class="postform">
 		        <option value=""><?php _e('Bulk Actions', 'adrotate'); ?></option>
 		        <option value="group_delete"><?php _e('Delete Group', 'adrotate'); ?></option>
-				<option value="group_delete_banners"><?php _e('Delete Group including ads', 'adrotate'); ?></option>
+				<option value="group_delete_banners"><?php _e('Delete Group including adverts', 'adrotate'); ?></option>
 			</select>
 			<input onclick="return confirm('<?php _e('You are about to delete a group', 'adrotate'); ?>\n<?php _e('This action can not be undone!', 'adrotate'); ?>\n<?php _e('OK to continue, CANCEL to stop.', 'adrotate'); ?>')" type="submit" id="post-action-submit" name="adrotate_action_submit" value="<?php _e('Go', 'adrotate'); ?>" class="button-secondary" />
 		</div>
@@ -31,7 +31,7 @@
 			<td class="check-column">&nbsp;</td>
 			<th width="5%"><center><?php _e('ID', 'adrotate'); ?></center></th>
 			<th><?php _e('Name', 'adrotate'); ?></th>
-			<th width="5%"><center><?php _e('Ads', 'adrotate'); ?></center></th>
+			<th width="5%"><center><?php _e('Adverts', 'adrotate'); ?></center></th>
 	        <?php if($adrotate_config['stats'] == 1) { ?>
 				<th width="5%"><center><?php _e('Shown', 'adrotate'); ?></center></th>
 				<th width="5%"><center><?php _e('Today', 'adrotate'); ?></center></th>
@@ -42,7 +42,7 @@
 			</thead>
 		<tbody>
 			
-		<?php $groups = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix . "adrotate_groups` WHERE `name` != '' ORDER BY `sortorder` ASC, `id` ASC;");
+		<?php $groups = $wpdb->get_results("SELECT * FROM `".$wpdb->prefix . "adrotate_groups` WHERE `name` != '' ORDER BY `id` ASC;");
 		if($groups) {
 			$class = '';
 			$modus = array();
@@ -67,7 +67,7 @@
 			    <tr class='<?php echo $class; ?>'>
 					<th class="check-column"><input type="checkbox" name="groupcheck[]" value="<?php echo $group->id; ?>" /></th>
 					<td><center><?php echo $group->id;?></center></td>
-					<td><strong><a class="row-title" href="<?php echo admin_url('/admin.php?page=adrotate-groups&view=edit&group='.$group->id);?>" title="<?php _e('Edit', 'adrotate'); ?>"><?php echo $group->name;?></a></strong> <?php if($adrotate_config['stats'] == 1) { ?>- <a href="<?php echo admin_url('/admin.php?page=adrotate-groups&view=report&group='.$group->id);?>" title="<?php _e('Report', 'adrotate'); ?>"><?php _e('Report', 'adrotate'); ?></a><?php } ?><span style="color:#999;"><?php echo '<br /><span style="font-weight:bold;">'.__('Mode', 'adrotate').':</span> '.implode(', ', $modus); ?></span></td>
+					<td><strong><a class="row-title" href="<?php echo admin_url('/admin.php?page=adrotate-groups&view=edit&group='.$group->id);?>" title="<?php _e('Edit', 'adrotate'); ?>"><?php echo $group->name;?></a></strong> <?php if($adrotate_config['stats'] == 1) { ?>- <a href="<?php echo admin_url('/admin.php?page=adrotate-groups&view=report&group='.$group->id);?>" title="<?php _e('Stats', 'adrotate'); ?>"><?php _e('Stats', 'adrotate'); ?></a><?php } ?><span style="color:#999;"><?php echo '<br /><span style="font-weight:bold;">'.__('Mode', 'adrotate').':</span> '.implode(', ', $modus); ?></span></td>
 					<td><center><?php echo $ads_in_group; ?></center></td>
 					<?php if($adrotate_config['stats'] == 1) { ?>
 						<td><center><?php echo $stats['impressions']; ?></center></td>

@@ -13,7 +13,7 @@
 	$action = "group_new";
 	$edit_id = $wpdb->get_var("SELECT `id` FROM `{$wpdb->prefix}adrotate_groups` WHERE `name` = '' ORDER BY `id` DESC LIMIT 1;");
 	if($edit_id == 0) {
-		$wpdb->insert($wpdb->prefix.'adrotate_groups', array('name' => '', 'modus' => 0, 'fallback' => '0', 'sortorder' => 0, 'cat' => '', 'cat_loc' => 0, 'cat_par' => 0, 'page' => '', 'page_loc' => 0, 'page_par' => 0, 'mobile' => 0, 'geo' => 0, 'wrapper_before' => '', 'wrapper_after' => '', 'gridrows' => 2, 'gridcolumns' => 2, 'admargin' => 0, 'admargin_bottom' => 0, 'admargin_left' => 0, 'admargin_right' => 0, 'adwidth' => '125', 'adheight' => '125', 'adspeed' => 6000));
+		$wpdb->insert($wpdb->prefix.'adrotate_groups', array('name' => '', 'modus' => 0, 'fallback' => '0', 'cat' => '', 'cat_loc' => 0, 'cat_par' => 0, 'page' => '', 'page_loc' => 0, 'page_par' => 0, 'mobile' => 0, 'geo' => 0, 'wrapper_before' => '', 'wrapper_after' => '', 'gridrows' => 2, 'gridcolumns' => 2, 'admargin' => 0, 'admargin_bottom' => 0, 'admargin_left' => 0, 'admargin_right' => 0, 'adwidth' => '125', 'adheight' => '125', 'adspeed' => 6000));
 	    $edit_id = $wpdb->insert_id;
 	}
 	$group_edit_id = $edit_id;
@@ -48,10 +48,6 @@ if(!is_array($meta_array)) $meta_array = array();
    	<table class="widefat" style="margin-top: .5em">
 		<tbody>
 	    <tr>
-			<th width="15%"><?php _e('ID', 'adrotate'); ?></th>
-			<td colspan="2"><?php echo $edit_group->id; ?></td>
-		</tr>
-	    <tr>
 			<th width="15%"><?php _e('Name', 'adrotate'); ?></th>
 			<td colspan="2">
 				<label for="adrotate_groupname"><input tabindex="1" name="adrotate_groupname" type="text" class="search-input" size="50" value="<?php echo $edit_group->name; ?>" autocomplete="off" /></label>
@@ -63,7 +59,7 @@ if(!is_array($meta_array)) $meta_array = array();
 		       	<select tabindex="2" name="adrotate_modus">
 		        	<option value="0" <?php if($edit_group->modus == 0) { echo 'selected'; } ?>><?php _e('Default - Show one ad at a time', 'adrotate'); ?></option>
 		        	<option value="1" <?php if($edit_group->modus == 1) { echo 'selected'; } ?>><?php _e('Dynamic Mode - Show a different ad every few seconds', 'adrotate'); ?></option>
-		        	<option value="2" <?php if($edit_group->modus == 2) { echo 'selected'; } ?>><?php _e('Block Mode - Show a block of ads', 'adrotate'); ?></option>
+		        	<option value="2" <?php if($edit_group->modus == 2) { echo 'selected'; } ?>><?php _e('Block Mode - Show a block of adverts', 'adrotate'); ?></option>
 		        </select> 
 			</td>
 			<td>
@@ -101,7 +97,7 @@ if(!is_array($meta_array)) $meta_array = array();
 				<label for="adrotate_adwidth"><input tabindex="5" name="adrotate_adwidth" type="text" class="search-input" size="3" value="<?php echo $edit_group->adwidth; ?>" autocomplete="off" /> <?php _e('pixel(s) wide', 'adrotate'); ?>,</label> <label for="adrotate_adheight"><input tabindex="6" name="adrotate_adheight" type="text" class="search-input" size="3" value="<?php echo $edit_group->adheight; ?>" autocomplete="off" /> <?php _e('pixel(s) high.', 'adrotate'); ?></label>
 			</td>
 			<td colspan="2">
-		        <p><em><?php _e('Dynamic and Block Mode', 'adrotate'); ?> - <?php _e('Define the maximum size of the ads in pixels. Size can be \'auto\' (Not recommended). Default: 125/125.', 'adrotate'); ?></em></p>
+		        <p><em><?php _e('Dynamic and Block Mode', 'adrotate'); ?> - <?php _e('Define the maximum size of the adverts in pixels. Size can be \'auto\' (Not recommended). Default: 125/125.', 'adrotate'); ?></em></p>
 			</td>
 		</tr>
 	    <tr>
@@ -138,7 +134,7 @@ if(!is_array($meta_array)) $meta_array = array();
 		<tbody>
       	<tr>
 	        <th width="15%"><?php _e('Widget', 'adrotate'); ?></th>
-	        <td colspan="3"><?php _e('Drag the AdRotate widget to the sidebar you want it in, select "Group of Ads" and enter ID', 'adrotate'); ?> "<?php echo $edit_group->id; ?>".</td>
+	        <td colspan="3"><?php _e('Drag the AdRotate widget to the sidebar you want it in, select "Group of Adverts" and enter ID', 'adrotate'); ?> "<?php echo $edit_group->id; ?>".</td>
       	</tr>
       	<tr>
 	        <th width="15%"><?php _e('In a post or page', 'adrotate'); ?></th>
@@ -190,11 +186,6 @@ if(!is_array($meta_array)) $meta_array = array();
 			<td width="35%"><label for="adrotate_mobile"><input type="checkbox" name="adrotate_mobile" value="1" disabled /> <?php _e('Enable mobile support for this group.', 'adrotate'); ?></label></td>
 			<td><p><em><?php _e('Do not forget to put at least one mobile advert in this group.', 'adrotate'); ?></em></p></td>
 		</tr>
-      	<tr>
-	        <th valign="top"><?php _e('Sortorder', 'adrotate'); ?></th>
-	        <td><label for="adrotate_sortorder"><input tabindex="11" name="adrotate_sortorder" type="text" size="5" class="search-input" autocomplete="off" value="<?php echo $edit_group->sortorder;?>" /></label></td>
-	        <td><em><?php _e('For administrative purposes set a sortorder.', 'adrotate'); ?> <?php _e('Leave empty or 0 to skip this. Will default to group id.', 'adrotate'); ?></em></td>
-      	</tr>
 		</tbody>
 	</table>
 	<center><?php _e('Set up mobile support and use Geo Targeting in AdRotate Pro', 'adrotate'); ?> <a href="admin.php?page=adrotate-pro"><?php _e('Upgrade today', 'adrotate'); ?></a>.</center>
@@ -216,7 +207,7 @@ if(!is_array($meta_array)) $meta_array = array();
 	        <label for="adrotate_cat_paragraph">
 		        <select tabindex="13" name="adrotate_cat_paragraph">
 		        	<option value="0" <?php if($edit_group->cat_par == 0) { echo 'selected'; } ?>>...</option>
-		        	<option value="98" <?php if($edit_group->cat_par == 98) { echo 'selected'; } ?>><?php _e('after the middle paragraph', 'adrotate'); ?></option>
+		        	<option value="99" <?php if($edit_group->cat_par == 99) { echo 'selected'; } ?>><?php _e('after the middle paragraph', 'adrotate'); ?></option>
 		        	<option value="1" <?php if($edit_group->cat_par == 1) { echo 'selected'; } ?>><?php _e('after the 1st paragraph', 'adrotate'); ?></option>
 		        	<option value="2" <?php if($edit_group->cat_par == 2) { echo 'selected'; } ?>><?php _e('after the 2nd paragraph', 'adrotate'); ?></option>
 		        	<option value="3" <?php if($edit_group->cat_par == 3) { echo 'selected'; } ?>><?php _e('after the 3rd paragraph', 'adrotate'); ?></option>
@@ -285,7 +276,7 @@ if(!is_array($meta_array)) $meta_array = array();
 		<tbody>
       	<tr>
 	        <th width="15%"><?php _e('Widget', 'adrotate'); ?></th>
-	        <td colspan="3"><?php _e('Drag the AdRotate widget to the sidebar you want it in, select "Group of Ads" and enter ID', 'adrotate'); ?> "<?php echo $edit_group->id; ?>".</td>
+	        <td colspan="3"><?php _e('Drag the AdRotate widget to the sidebar you want it in, select "Group of Adverts" and enter ID', 'adrotate'); ?> "<?php echo $edit_group->id; ?>".</td>
       	</tr>
       	<tr>
 	        <th width="15%"><?php _e('In a post or page', 'adrotate'); ?></th>
@@ -376,7 +367,7 @@ if(!is_array($meta_array)) $meta_array = array();
 		<?php } else { ?>
 		<tr>
 			<th class="check-column">&nbsp;</th>
-			<td colspan="<?php echo ($adrotate_config['stats'] == 1) ? '6' : '4'; ?>"><em><?php _e('No ads created!', 'adrotate'); ?></em></td>
+			<td colspan="<?php echo ($adrotate_config['stats'] == 1) ? '6' : '4'; ?>"><em><?php _e('No adverts created!', 'adrotate'); ?></em></td>
 		</tr>
 		<?php } ?>
 		</tbody>					

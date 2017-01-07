@@ -60,9 +60,9 @@ function awaken_info_display_content() { ?>
 					<a href="<?php echo esc_url('http://themezhut.com/demo/awaken-pro/'); ?>" target="_blank"><?php _e( 'Awaken Pro Demo', 'awaken' ); ?></a>
 				</div>
 
-				<h4 class="awaken-notice">Important Notice -</h4>
-				<p><?php _e( 'As per the new guidelines to remove theme options panels of the themes that are available on WordPress.org, we have completely removed the "Awaken Options" panel. All the options are now located in the theme customizer. Go to <b>"Appearence > Customize"</b> to find the Customizer or please use the "Contact Us" link below if you have run into any issues with the update.', 'awaken' ); ?></p>
-				<a href="<?php echo esc_url('http://themezhut.com/contact/'); ?>" target="_blank"><?php _e( 'Contact Us', 'awaken' ); ?></a>
+				<h4 class="awaken-notice">Rate / Review Awaken Theme </h4>
+				<p><?php _e( 'Do you love awaken theme? Were you using it for a while? Then please just take 5 minutes to review it. It will be a very big help for us and it will be a very nice incentive for its further development, if you can give it a <b><u>Five Star</u></b> rating. If you have any problem with it please contact us. We will be happy to help you.', 'awaken' ); ?></p>
+				<a href="<?php echo esc_url('https://wordpress.org/support/view/theme-reviews/awaken#postform'); ?>" target="_blank"><?php _e( 'Click here to go to add your review.', 'awaken' ); ?></a>
 
 			</div>
 		</div>

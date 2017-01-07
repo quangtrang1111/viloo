@@ -9,7 +9,12 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('General Settings', 'adrotate'); ?></h3>
+
+<form name="settings" id="post" method="post" action="admin.php?page=adrotate-settings&tab=general">
+<?php wp_nonce_field('adrotate_settings','adrotate_nonce_settings'); ?>
+<input type="hidden" name="adrotate_settings_tab" value="<?php echo $active_tab; ?>" />
+
+<h2><?php _e('General Settings', 'adrotate'); ?></h2>
 <span class="description"><?php _e('General settings for AdRotate.', 'adrotate'); ?> <?php _e('Some options are only available in AdRotate Pro!', 'adrotate'); ?></span>
 <table class="form-table">			
 	<tr>
@@ -21,7 +26,7 @@
 		<td><label for="adrotate_live_preview"><input type="checkbox" name="adrotate_live_preview" disabled checked /><?php _e('Enable this option if you have faulty adverts that overflow their designated area while creating/editing adverts.', 'adrotate'); ?></label></td>
 	</tr>
 	<tr>
-		<th valign="top"><?php _e('Disable dynamic mode', 'adrotate-pro'); ?></th>
+		<th valign="top"><?php _e('Disable dynamic mode', 'adrotate'); ?></th>
 		<td><label for="adrotate_mobile_dynamic_mode"><input type="checkbox" name="adrotate_mobile_dynamic_mode" <?php if($adrotate_config['mobile_dynamic_mode'] == 'Y') { ?>checked="checked" <?php } ?> /><?php _e('Enable this option to disable dynamic mode in groups for mobile devices if you notice skipping or jumpy content.', 'adrotate'); ?></label></td>
 	</tr>
 	<tr>
@@ -47,7 +52,7 @@
 	<tr>
 		<th valign="top"><?php _e('Location', 'adrotate'); ?></th>
 		<td>
-			<label for="adrotate_banner_folder"><?php echo site_url(); ?>/<input name="adrotate_banner_folder_disabled" type="text" class="search-input" size="30" value="wp-content/banners/" disabled /> <?php _e('(Default: wp-content/banners/).', 'adrotate'); ?><br />
+			<label for="adrotate_banner_folder"><?php echo ABSPATH; ?><input name="adrotate_banner_folder_disabled" type="text" class="search-input" size="30" value="<?php echo $adrotate_config['banner_folder']; ?>" disabled="1" /> <?php _e('(Default: wp-content/banners/).', 'adrotate'); ?><br />
 			<span class="description"><?php _e('To try and trick ad blockers you could set the folder to something crazy like:', 'adrotate'); ?> "/wp-content/<?php echo adrotate_rand(12); ?>/".<br />
 			<?php _e("This folder will not be automatically created if it doesn't exist. AdRotate will show errors when the folder is missing.", 'adrotate'); ?></span>
 		</td>
@@ -60,7 +65,7 @@
 	<tr>
 		<th valign="top"><?php _e('User-Agent Filter', 'adrotate'); ?></th>
 		<td>
-			<textarea name="adrotate_crawlers" cols="90" rows="15"><?php echo $crawlers; ?></textarea><br />
+			<textarea name="adrotate_crawlers" cols="90" rows="10"><?php echo $crawlers; ?></textarea><br />
 			<span class="description"><?php _e('A comma separated list of keywords. Filter out bots/crawlers/user-agents.', 'adrotate'); ?><br />
 			<?php _e('Keep in mind that this might give false positives. The word \'fire\' also matches \'firefox\', but not vice-versa. So be careful!', 'adrotate'); ?><br />
 			<?php _e('Only words with alphanumeric characters and [ - _ ] are allowed. All other characters are stripped out.', 'adrotate'); ?><br />
@@ -68,3 +73,8 @@
 		</td>
 	</tr>
 </table>
+
+<p class="submit">
+  	<input type="submit" name="adrotate_save_options" class="button-primary" value="<?php _e('Update Options', 'adrotate'); ?>" />
+</p>
+</form>

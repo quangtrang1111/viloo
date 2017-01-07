@@ -9,7 +9,11 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('Miscellaneous', 'adrotate'); ?></h3>
+<form name="settings" id="post" method="post" action="admin.php?page=adrotate-settings&tab=misc">
+<?php wp_nonce_field('adrotate_settings','adrotate_nonce_settings'); ?>
+<input type="hidden" name="adrotate_settings_tab" value="<?php echo $active_tab; ?>" />
+
+<h2><?php _e('Miscellaneous', 'adrotate'); ?></h2>
 <table class="form-table">			
 	<tr>
 		<th valign="top"><?php _e('Widget alignment', 'adrotate'); ?></th>
@@ -22,7 +26,7 @@
 	<?php if($adrotate_config['w3caching'] == "Y" AND !defined('W3TC_DYNAMIC_SECURITY')) { ?>
 	<tr>
 		<th valign="top"><?php _e('NOTICE:', 'adrotate'); ?></th>
-		<td><span style="color:#f00;"><?php _e('You have enabled W3 Total Caching support but not defined the security hash. You need to add the following line to your wp-config.php near the bottom or below line 52 (which defines another hash.) Using the "late init" function needs to be enabled in W3 Total Cache as well too.', 'adrotate'); ?></span><br /><pre>define('W3TC_DYNAMIC_SECURITY', '<?php echo md5(rand(0,999)); ?>');</pre></td>
+		<td><span style="color:#f00;"><?php _e('You have enabled W3 Total Caching support but not defined the security hash.', 'adrotate'); ?></span><br /><br /><?php _e('AdRotate has generated the following line for you to add to your wp-config.php around line 52 (below the WordPress nonces). If you do not know how to add this line, check out the following guide;', 'adrotate'); ?> <a href="https://ajdg.solutions/manuals/adrotate-manuals/caching-support/"><?php _e('Set up W3 Total Caching', 'adrotate'); ?></a>.<br /><pre>define('W3TC_DYNAMIC_SECURITY', '<?php echo md5(rand(0,999)); ?>');</pre></td>
 	</tr>
 	<?php } ?>
 	<tr>
@@ -34,3 +38,8 @@
 		<td><span class="description"><?php _e('It may take a while for the ad to start rotating. The caching plugin needs to refresh the cache. This can take up to a week if not done manually.', 'adrotate'); ?> <?php _e('Caching support only works for [shortcodes] and the AdRotate Widget. If you use a PHP Snippet you need to wrap your PHP in the exclusion code yourself.', 'adrotate'); ?></span></td>
 	</tr>
 </table>
+
+<p class="submit">
+  	<input type="submit" name="adrotate_save_options" class="button-primary" value="<?php _e('Update Options', 'adrotate'); ?>" />
+</p>
+</form>

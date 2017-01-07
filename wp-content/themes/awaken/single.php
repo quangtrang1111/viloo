@@ -8,13 +8,7 @@
 get_header(); ?>
 <div class="row">
 <?php is_rtl() ? $rtl = 'awaken-rtl' : $rtl = ''; ?>
-
-<!--QuangTrang-->  
-    <div class="col-xs-1 col-sm-1 col-md-2" style="position: fixed; margin-bottom:50px"><?php echo adrotate_ad(2); ?></div>
-    <div class="col-xs-1 col-sm-1 col-md-2" style="width:180px"></div>
-<!--QuangTrangEnd-->
-
-<div class="col-xs-12 col-sm-12 col-md-7 <?php echo $rtl ?>">
+<div class="col-xs-12 col-sm-12 col-md-8 <?php echo $rtl ?>">
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
 
@@ -39,7 +33,7 @@ get_header(); ?>
 		</main><!-- #main -->
 	</div><!-- #primary -->
 </div><!-- .bootstrap cols -->
-<div class="col-xs-12 col-sm-6 col-md-3">
+<div class="col-xs-12 col-sm-6 col-md-4">
 	<?php get_sidebar(); ?>
 </div><!-- .bootstrap cols -->
 </div><!-- .row -->

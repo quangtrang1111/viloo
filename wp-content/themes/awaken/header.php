@@ -73,12 +73,14 @@
 							<h2 class="site-description"><?php bloginfo( 'description' ); ?></h2>
 						</div>
 				<?php } ?>
-<!--QuangTrang-->
-            <div class="ad-top">
-                <?php echo adrotate_ad(1); ?>
-            </div>      
-<!--QuangTrangEnd-->
-			</div><!-- .site-brand-container -->      
+			</div><!-- .site-brand-container -->
+			<?php if(is_active_sidebar( 'header-ad' )) : ?>
+				<div class="header-ad-area">
+					<div id="secondary" class="widget-area" role="complementary">
+						<?php dynamic_sidebar( 'header-ad' ); ?>
+					</div><!-- #secondary -->
+				</div><!--.header-ad-area-->
+			<?php endif; ?>			
 		</div>
 	</div>
 
@@ -90,15 +92,18 @@
 			<a href="#" class="navbutton" id="main-nav-button"><?php _e( 'Main Menu', 'awaken' ); ?></a>
 			<div class="responsive-mainnav"></div>
 
-			<div class="awaken-search-button-icon"></div>
-			<div class="awaken-search-box-container">
-				<div class="awaken-search-box">
-					<form action="<?php echo esc_url( home_url( '/' ) ); ?>" id="awaken-search-form" method="get">
-						<input type="text" value="" name="s" id="s" />
-						<input type="submit" value="<?php _e( 'Search', 'awaken' ); ?>" />
-					</form>
-				</div><!-- th-search-box -->
-			</div><!-- .th-search-box-container -->
+			<?php if ( get_theme_mod( 'show_search_box', true ) ) : ?>
+				<div class="awaken-search-button-icon"></div>
+				<div class="awaken-search-box-container">
+					<div class="awaken-search-box">
+						<form action="<?php echo esc_url( home_url( '/' ) ); ?>" id="awaken-search-form" method="get">
+							<input type="text" value="" name="s" id="s" />
+							<input type="submit" value="<?php _e( 'Search', 'awaken' ); ?>" />
+						</form>
+					</div><!-- th-search-box -->
+				</div><!-- .th-search-box-container -->
+			<?php endif; ?>
+
 		</div><!-- .awaken-navigation-container-->
 	</div><!-- .container -->
 	</header><!-- #masthead -->

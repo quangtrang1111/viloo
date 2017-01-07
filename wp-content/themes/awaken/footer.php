@@ -30,7 +30,8 @@
 								<?php if ( ! dynamic_sidebar( 'footer-mid' ) ) : ?>
 
 								<?php endif; // end sidebar widget area ?>
-							</div><!-- .widget-area -->						</div>
+							</div><!-- .widget-area -->						
+						</div>
 					</div>
 
 					<div class="col-md-4">
@@ -49,18 +50,29 @@
 		<div class="footer-site-info">	
 			<div class="container">
 				<div class="row">
-				<?php 
-					$footer_copyright_text = get_theme_mod( 'footer_copyright_text', '' );
-					if( !empty( $footer_copyright_text ) ) {
-						echo wp_kses_post( $footer_copyright_text ); 
-					} else { ?>
-						<div class="col-xs-12 col-md-6 col-sm-6">				
-							<?php printf( __( '© Copyright %s - Viloo all rights reserved', '' ), date('Y') ); ?>
+					<div class="col-xs-12 col-md-6 col-sm-6">
+						<?php $footer_copyright_text = get_theme_mod( 'footer_copyright_text', '' );
+						if( ! empty( $footer_copyright_text ) ) {
+							echo wp_kses_post( $footer_copyright_text ); 
+						} else {
+							$site_link = '<a href="' . esc_url( home_url( '/' ) ) . '" title="' . esc_attr( get_bloginfo( 'name' ) ) . '" >' . get_bloginfo( 'name' ) . '</a>';
+
+							printf( __( 'Copyright &#169; %1$s %2$s.', 'awaken' ), date_i18n( 'Y' ), $site_link );
+						} ?>
+					</div>
+					<div class="col-xs-12 col-md-6 col-sm-6 fr">
+						<div class="th-copyright">
+							<?php
+								$wp_link = '<a href="http://wordpress.org" target="_blank" title="' . esc_attr__( 'WordPress', 'awaken' ) . '">' . __( 'WordPress', 'awaken' ) . '</a>'; 
+								printf( esc_html__( 'Proudly powered by %s.', 'awaken' ), $wp_link );
+							?>
+							<span class="sep"> | </span>
+							<?php 
+								$th_link = '<a href="http://themezhut.com/themes/awaken" target="_blank" rel="designer">ThemezHut</a>';
+								printf( esc_html__( 'Theme: %1$s by %2$s.', 'awaken' ), 'Awaken', $th_link ); 
+							?>
 						</div>
-						<div class="col-xs-12 col-md-6 col-sm-6 fr">
-							<a href="mailto:huynhquangtrang1994@gmail.com"> <?php printf( __( 'Developed by Quang Trang' ) ); ?></a>
-						</div>
-				<?php } ?>
+					</div>
 				</div><!-- .row -->
 			</div><!-- .container -->
 		</div><!-- .site-info -->

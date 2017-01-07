@@ -9,21 +9,22 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 
-$banner 		= $wpdb->get_row("SELECT `title`, `tracker` FROM `".$wpdb->prefix."adrotate` WHERE `id` = '$ad_edit_id';");
-$stats 			= adrotate_stats($ad_edit_id);
-$stats_today 	= adrotate_stats($ad_edit_id, $today);
+$banner = $wpdb->get_row("SELECT `title`, `tracker` FROM `".$wpdb->prefix."adrotate` WHERE `id` = '$ad_edit_id';");
+$stats = adrotate_stats($ad_edit_id);
+$stats_today = adrotate_stats($ad_edit_id, $today);
+$stats_graph_month = adrotate_stats($ad_edit_id, $monthstart, $monthend);
 
 // Get Click Through Rate
 $ctr = adrotate_ctr($stats['clicks'], $stats['impressions']);
+$ctr_graph_month = adrotate_ctr($stats_graph_month['clicks'], $stats_graph_month['impressions']);
 
-if($adrotate_debug['publisher'] == true) {
-	echo "<p><strong>[DEBUG] Ad Stats (all time)</strong><pre>";
-	print_r($stats); 
-	echo "</pre></p>"; 
-	echo "<p><strong>[DEBUG] Ad Stats (today)</strong><pre>";
-	print_r($stats_today); 
-	echo "</pre></p>"; 
-}	
+// Prevent gaps in display
+if(empty($stats['impressions'])) $stats['impressions'] = 0;
+if(empty($stats['clicks']))	$stats['clicks'] = 0;
+if(empty($stats_today['impressions'])) $stats_today['impressions'] = 0;
+if(empty($stats_today['clicks'])) $stats_today['clicks'] = 0;
+if(empty($stats_graph_month['impressions'])) $stats_graph_month['impressions'] = 0;
+if(empty($stats_graph_month['clicks'])) $stats_graph_month['clicks'] = 0;
 ?>
 
 <h3><?php _e('Statistics for advert', 'adrotate'); ?> '<?php echo $banner->title; ?>'</h3>
@@ -45,12 +46,17 @@ if($adrotate_debug['publisher'] == true) {
 <table class="widefat" style="margin-top: .5em">
 
 	<tbody>
-  	<tr>
-        <th colspan="5">
+	<tr>
+        <th colspan="3">
         	<div style="text-align:center;"><?php echo adrotate_stats_nav('ads', $ad_edit_id, $month, $year); ?></div>
         	<?php echo adrotate_stats_graph('ads', $ad_edit_id, 1, $monthstart, $monthend); ?>
         </th>
-  	</tr>
+	</tr>
+	<tr>
+        <td width="33%"><div class="stats_large"><?php _e('Impressions', 'adrotate'); ?><br /><div class="number_large"><?php echo $stats_graph_month['impressions']; ?></div></div></td>
+        <td width="33%"><div class="stats_large"><?php _e('Clicks', 'adrotate'); ?><br /><div class="number_large"><?php if($banner->tracker == "Y") { echo $stats_graph_month['clicks']; } else { echo '--'; } ?></div></div></td>
+        <td width="34%"><div class="stats_large"><?php _e('CTR', 'adrotate'); ?><br /><div class="number_large"><?php if($banner->tracker == "Y") { echo $ctr_graph_month.' %'; } else { echo '--'; } ?></div></div></td>
+	</tr>
 	</tbody>
 
 </table>	

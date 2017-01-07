@@ -15,7 +15,6 @@ function awaken_customize_register( $wp_customize ) {
 	require( get_template_directory() . '/inc/customizer/custom-controls/control-category-dropdown.php' );
 	require( get_template_directory() . '/inc/customizer/custom-controls/control-custom-content.php' );
 
-	$wp_customize->remove_section( 'themes' );
 	$wp_customize->get_setting( 'blogname' )->transport         = 'postMessage';
 	$wp_customize->get_setting( 'blogdescription' )->transport  = 'postMessage';
 	$wp_customize->get_setting( 'header_textcolor' )->transport = 'postMessage';
@@ -134,6 +133,22 @@ function awaken_customize_register( $wp_customize ) {
 		) 
 	);
 
+    $wp_customize->add_setting(
+		'show_search_box',
+		array(
+			'default'			=> true,
+			'sanitize_callback'	=> 'awaken_sanitize_checkbox'
+		)
+	);
+    $wp_customize->add_control(
+		'show_search_box',
+		array(
+			'section'		=> 'awaken_general_settings',
+			'type'			=> 'checkbox',
+			'label'			=> __( 'Show search box on navigation?', 'awaken' ),
+		)
+	);
+
 	// Read more text.
 	$wp_customize->add_setting(
 		'read_more_text',
@@ -238,6 +253,31 @@ function awaken_customize_register( $wp_customize ) {
 	);
 
 	$wp_customize->add_setting(
+		'fposts_display_method',
+		array(
+			'default'			=> 'category',
+			'type'				=> 'theme_mod',
+			'capability'		=> 'edit_theme_options',
+			'sanitize_callback'	=> 'awaken_sanitize_select'
+		)
+	);
+
+	$wp_customize->add_control(
+		'fposts_display_method',
+		array(
+			'section'		=> 'awaken_slider',
+			'type'			=> 'radio',
+			'label'			=> __( 'Select featured posts display method.', 'awaken' ),
+			'description'	=> __( 'Featured posts are the two posts just next to the slider.', 'awaken' ),
+			'choices'		=> array(
+				'category' 	=> __( 'Display posts from a selected category', 'awaken' ),
+				'sticky' 	=> __( 'Display sticky posts.', 'awaken' )
+			)
+		)
+	);
+
+
+	$wp_customize->add_setting(
 		'featured_posts_category',
 		array(
 			'default'			=> '',
@@ -250,10 +290,11 @@ function awaken_customize_register( $wp_customize ) {
 			$wp_customize,
 			'featured_posts_category', 
 			array(
-			    'label'   		=> __( 'Select the category for featured posts.', 'awaken' ),
-			    'description'	=> __( 'Featured images of the posts from selected category will be displayed in the slider', 'awaken' ),
-			    'section' 		=> 'awaken_slider',
-			    'settings'  	=> 'featured_posts_category',
+			    'label'   			=> __( 'Select the category for featured posts.', 'awaken' ),
+			    'description'		=> __( 'Featured images of the posts from selected category will be displayed in the slider', 'awaken' ),
+			    'section' 			=> 'awaken_slider',
+			    'settings'  		=> 'featured_posts_category',
+			    'active_callback' 	=> 'choice_category_callback'
 			) 
 		) 
 	);
@@ -684,6 +725,38 @@ function awaken_sanitize_category_dropdown( $catid ) {
 	
 }
 
+/**
+ * Select sanitization.
+ *
+ * - Sanitization: select
+ * - Control: select, radio
+ *
+ * @param string               $input   Slug to sanitize.
+ * @param WP_Customize_Setting $setting Setting instance.
+ * @return string Sanitized slug if it is a valid choice; otherwise, the setting default.
+ */
+function awaken_sanitize_select( $input, $setting ) {
+	
+	// Ensure input is a slug.
+	$input = sanitize_key( $input );
+	
+	// Get list of choices from the control associated with the setting.
+	$choices = $setting->manager->get_control( $setting->id )->choices;
+	
+	// If the input is a valid key, return it; otherwise, return the default.
+	return ( array_key_exists( $input, $choices ) ? $input : $setting->default );
+}
+
+/**
+ * Featured posts category select callback.
+ */
+function choice_category_callback( $control ) {
+    if ( $control->manager->get_setting('fposts_display_method')->value() == 'category' ) {
+        return true;
+    } else {
+        return false;
+    }
+}
 
 /**
  * Binds JS handlers to make Theme Customizer preview reload changes asynchronously.

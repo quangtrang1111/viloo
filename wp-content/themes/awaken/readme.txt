@@ -1,5 +1,5 @@
 ﻿Theme Name : Awaken
-Version    : 2.0.3
+Version    : 2.1.1
 Theme URL  : http://www.themezhut.com/themes/awaken
 Theme Documentation  : http://www.themezhut.com/awaken-theme-documentation
 License: GNU General Public License v2 or later
@@ -172,3 +172,35 @@ Fixed a issue in get_theme_mod in footer.php
 - Version 2.0.3
 Changed archive title for categories and tags.
 Fixed Google Plus icon not displaying issue.
+
+- Version 2.0.4
+Removed checking useragent for html5shiv and used wp_script_add_data instead.
+Removed unwanted file_exists check for admin-config.php.
+
+- Version 2.0.5
+Added a method to display sticky posts for the two featured posts that are just next to the slider.
+
+- Version 2.0.6
+Removed old theme filtering tags and added new tags.
+
+- Version 2.0.7
+Added "header ad" widget area to header.
+Added a checkbox to show/hide search box on navigation. ( Appearance > Customize > General Settins. )
+Updated font awesome font.
+
+- Version 2.0.8
+Changed widget post titles <h1> tags to <h3>
+Changed blog listing titles <h1> tags to <h2>
+Fixed undefined variable issue in magazine widgets.
+Added the previously removed theme section again to the customizer.
+
+- Version 2.0.9
+Changed slider h1 tags to h3.
+Passed fonts url to editor stylesheet.
+Added some stylings to the search form.
+
+- Version 2.1.0
+Fine tuned the slider.
+
+- Version 2.1.1
+Quick fix for the slider issue.

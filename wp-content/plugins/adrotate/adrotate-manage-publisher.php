@@ -11,10 +11,7 @@
 
 /*-------------------------------------------------------------
  Name:      adrotate_insert_input
-
  Purpose:   Prepare input form on saving new or updated banners
- Receive:   -None-
- Return:	-None-
  Since:		0.1 
 -------------------------------------------------------------*/
 function adrotate_insert_input() {
@@ -22,7 +19,7 @@ function adrotate_insert_input() {
 
 	if(wp_verify_nonce($_POST['adrotate_nonce'], 'adrotate_save_ad')) {
 		// Mandatory
-		$id = $schedule_id = $author = $title = $bannercode = $active = $sortorder = '';
+		$id = $schedule_id = $author = $title = $bannercode = $active = '';
 		if(isset($_POST['adrotate_id'])) $id = $_POST['adrotate_id'];
 		if(isset($_POST['adrotate_schedule'])) $schedule_id = $_POST['adrotate_schedule'];
 		if(isset($_POST['adrotate_username'])) $author = $_POST['adrotate_username'];
@@ -30,7 +27,6 @@ function adrotate_insert_input() {
 		if(isset($_POST['adrotate_bannercode'])) $bannercode = htmlspecialchars(trim($_POST['adrotate_bannercode'], "\t\n "), ENT_QUOTES);
 		$thetime = adrotate_now();
 		if(isset($_POST['adrotate_active'])) $active = strip_tags(htmlspecialchars(trim($_POST['adrotate_active'], "\t\n "), ENT_QUOTES));
-		if(isset($_POST['adrotate_sortorder'])) $sortorder = strip_tags(htmlspecialchars(trim($_POST['adrotate_sortorder'], "\t\n "), ENT_QUOTES));
 
 		// Schedules
 		$sday = $smonth = $syear = $shour = $sminute = '';
@@ -109,9 +105,6 @@ function adrotate_insert_input() {
 			// Enddate is too early, reset to default
 			if($enddate <= $startdate) $enddate = $startdate + 7257600; // 84 days (12 weeks)
 		
-			// Validate sort order
-			if(strlen($sortorder) < 1 OR !is_numeric($sortorder) AND ($sortorder < 1 OR $sortorder > 99999)) $sortorder = 0;
-	
 			// Sort out click and impressions restrictions
 			if(strlen($maxclicks) < 1 OR !is_numeric($maxclicks))	$maxclicks	= 0;
 			if(strlen($maxshown) < 1 OR !is_numeric($maxshown))		$maxshown	= 0;
@@ -143,7 +136,7 @@ function adrotate_insert_input() {
 			$wpdb->update($wpdb->prefix.'adrotate_schedule', array('starttime' => $startdate, 'stoptime' => $enddate, 'maxclicks' => $maxclicks, 'maximpressions' => $maxshown), array('id' => $schedule_id));
 
 			// Save the ad to the DB
-			$wpdb->update($wpdb->prefix.'adrotate', array('title' => $title, 'bannercode' => $bannercode, 'updated' => $thetime, 'author' => $author, 'imagetype' => $imagetype, 'image' => $image, 'tracker' => $tracker, 'responsive' => $responsive, 'type' => $active, 'sortorder' => $sortorder), array('id' => $id));
+			$wpdb->update($wpdb->prefix.'adrotate', array('title' => $title, 'bannercode' => $bannercode, 'updated' => $thetime, 'author' => $author, 'imagetype' => $imagetype, 'image' => $image, 'tracker' => $tracker, 'responsive' => $responsive, 'type' => $active), array('id' => $id));
 
 			// Determine Responsive requirement
 			$responsive_count = $wpdb->get_var("SELECT COUNT(*) as `total` FROM `{$wpdb->prefix}adrotate` WHERE `responsive` = 'Y';");
@@ -180,7 +173,8 @@ function adrotate_insert_input() {
 			}
 			
 			if($active == "active") {
-				adrotate_prepare_evaluate_ads(false, $id);
+				// Verify all ads
+				adrotate_prepare_evaluate_ads(false);
 			}
 
 			adrotate_return('adrotate-ads', 200);
@@ -196,10 +190,7 @@ function adrotate_insert_input() {
 
 /*-------------------------------------------------------------
  Name:      adrotate_insert_group
-
  Purpose:   Save provided data for groups, update linkmeta where required
- Receive:   -None-
- Return:	-None-
  Since:		0.4
 -------------------------------------------------------------*/
 function adrotate_insert_group() {
@@ -219,11 +210,10 @@ function adrotate_insert_group() {
 		if(isset($_POST['adrotate_adheight'])) $adheight = strip_tags(trim($_POST['adrotate_adheight'], "\t\n "));
 		if(isset($_POST['adrotate_adspeed'])) $adspeed = strip_tags(trim($_POST['adrotate_adspeed'], "\t\n "));
 
-		$ads = $admargin = $align = $sortorder = '';
+		$ads = $admargin = $align = '';
 		if(isset($_POST['adselect'])) $ads = $_POST['adselect'];
 		if(isset($_POST['adrotate_admargin'])) $admargin = strip_tags(trim($_POST['adrotate_admargin'], "\t\n "));
 		if(isset($_POST['adrotate_align'])) $align = strip_tags(trim($_POST['adrotate_align'], "\t\n "));
-		if(isset($_POST['adrotate_sortorder'])) $sortorder = strip_tags(htmlspecialchars(trim($_POST['adrotate_sortorder'], "\t\n "), ENT_QUOTES));
 
 		$categories = $category_loc = $category_par = $pages = $page_loc = $page_par = '';
 		if(isset($_POST['adrotate_categories'])) $categories = $_POST['adrotate_categories'];
@@ -250,9 +240,6 @@ function adrotate_insert_group() {
 			if((is_numeric($adwidth) AND $adwidth < 1 OR $adwidth > 9999) OR $adwidth == '' OR (!is_numeric($adwidth) AND $adwidth != 'auto')) $adwidth = '125';
 			if((is_numeric($adheight) AND $adheight < 1 OR $adheight > 9999) OR $adheight == '' OR (!is_numeric($adheight) AND $adheight != 'auto')) $adheight = '125';
 			if($admargin < 0 OR $admargin > 99 OR $admargin == '' OR !is_numeric($admargin)) $admargin = 0;
-	
-			// Validate sort order
-			if(strlen($sortorder) < 1 OR !is_numeric($sortorder) AND ($sortorder < 1 OR $sortorder > 99999)) $sortorder = $id;
 	
 			// Categories
 			if(!is_array($categories)) $categories = array();
@@ -302,7 +289,7 @@ function adrotate_insert_group() {
 			unset($value);
 	
 			// Update the group itself
-			$wpdb->update($wpdb->prefix.'adrotate_groups', array('name' => $name, 'modus' => $modus, 'fallback' => 0, 'sortorder' => $sortorder, 'cat' => $category, 'cat_loc' => $category_loc, 'cat_par' => $category_par, 'page' => $page, 'page_loc' => $page_loc, 'page_par' => $page_par, 'wrapper_before' => $wrapper_before, 'wrapper_after' => $wrapper_after, 'align' => $align, 'gridrows' => $rows, 'gridcolumns' => $columns, 'admargin' => $admargin, 'adwidth' => $adwidth, 'adheight' => $adheight, 'adspeed' => $adspeed), array('id' => $id));
+			$wpdb->update($wpdb->prefix.'adrotate_groups', array('name' => $name, 'modus' => $modus, 'fallback' => 0, 'cat' => $category, 'cat_loc' => $category_loc, 'cat_par' => $category_par, 'page' => $page, 'page_loc' => $page_loc, 'page_par' => $page_par, 'wrapper_before' => $wrapper_before, 'wrapper_after' => $wrapper_after, 'align' => $align, 'gridrows' => $rows, 'gridcolumns' => $columns, 'admargin' => $admargin, 'adwidth' => $adwidth, 'adheight' => $adheight, 'adspeed' => $adspeed), array('id' => $id));
 
 			// Determine Dynamic Library requirement
 			$dynamic_count = $wpdb->get_var("SELECT COUNT(*) as `total` FROM `{$wpdb->prefix}adrotate_groups` WHERE `name` != '' AND `modus` = 1;");
@@ -321,10 +308,7 @@ function adrotate_insert_group() {
 
 /*-------------------------------------------------------------
  Name:      adrotate_request_action
-
  Purpose:   Prepare action for banner or group from database
- Receive:   -none-
- Return:    -none-
  Since:		2.2
 -------------------------------------------------------------*/
 function adrotate_request_action() {
@@ -372,7 +356,7 @@ function adrotate_request_action() {
 				if($action == 'deactivate') {
 					if(current_user_can('adrotate_ad_manage')) {
 						adrotate_active($banner_id, 'deactivate');
-						$result_id = $banner_id;
+						$result_id = 210;
 					} else {
 						adrotate_return($return, 500);
 					}
@@ -380,7 +364,7 @@ function adrotate_request_action() {
 				if($action == 'activate') {
 					if(current_user_can('adrotate_ad_manage')) {
 						adrotate_active($banner_id, 'activate');
-						$result_id = $banner_id;
+						$result_id = 211;
 					} else {
 						adrotate_return($return, 500);
 					}
@@ -388,7 +372,7 @@ function adrotate_request_action() {
 				if($action == 'delete') {
 					if(current_user_can('adrotate_ad_delete')) {
 						adrotate_delete($banner_id, 'banner');
-						$result_id = $banner_id;
+						$result_id = 203;
 					} else {
 						adrotate_return($return, 500);
 					}
@@ -396,7 +380,7 @@ function adrotate_request_action() {
 				if($action == 'reset') {
 					if(current_user_can('adrotate_ad_delete')) {
 						adrotate_reset($banner_id);
-						$result_id = $banner_id;
+						$result_id = 208;
 					} else {
 						adrotate_return($return, 500);
 					}
@@ -404,20 +388,13 @@ function adrotate_request_action() {
 				if($action == 'renew') {
 					if(current_user_can('adrotate_ad_manage')) {
 						adrotate_renew($banner_id, $specific);
-						$result_id = $banner_id;
-					} else {
-						adrotate_return($return, 500);
-					}
-				}
-				if($action == 'weight') {
-					if(current_user_can('adrotate_ad_manage')) {
-						adrotate_weight($banner_id, $specific);
-						$result_id = $banner_id;
+						$result_id = 209;
 					} else {
 						adrotate_return($return, 500);
 					}
 				}
 			}
+			// Verify all ads
 			adrotate_prepare_evaluate_ads(false);
 		}
 		
@@ -427,7 +404,7 @@ function adrotate_request_action() {
 				if($action == 'group_delete') {
 					if(current_user_can('adrotate_group_delete')) {
 						adrotate_delete($group_id, 'group');
-						$result_id = $group_id;
+						$result_id = 204;
 					} else {
 						adrotate_return($return, 500);
 					}
@@ -435,7 +412,7 @@ function adrotate_request_action() {
 				if($action == 'group_delete_banners') {
 					if(current_user_can('adrotate_group_delete')) {
 						adrotate_delete($group_id, 'bannergroup');
-						$result_id = $group_id;
+						$result_id = 213;
 					} else {
 						adrotate_return($return, 500);
 					}
@@ -466,32 +443,23 @@ function adrotate_delete($id, $what) {
 			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate` WHERE `id` = %d;", $id));
 			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_linkmeta` WHERE `ad` = %d;", $id));
 			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_stats` WHERE `ad` = %d;", $id));
-			adrotate_prepare_evaluate_ads(false);
 		} else if ($what == 'group') {
 			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_groups` WHERE `id` = %d;", $id));
 			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_linkmeta` WHERE `group` = %d;", $id));
-			adrotate_prepare_evaluate_ads(false);
 		} else if ($what == 'bannergroup') {
-			$linkmeta = $wpdb->get_results($wpdb->prepare("SELECT `ad` FROM `{$wpdb->prefix}adrotate_linkmeta` WHERE `group` = %d;", $id));
+			$linkmeta = $wpdb->get_results($wpdb->prepare("SELECT `ad` FROM `{$wpdb->prefix}adrotate_linkmeta` WHERE `group` = %d AND `user` = '0' AND `schedule` = '0';", $id));
 			foreach($linkmeta as $meta) {
-				$wpdb->query("DELETE FROM `{$wpdb->prefix}adrotate` WHERE `id` = ".$meta->ad.";");
-				$wpdb->query("DELETE FROM `{$wpdb->prefix}adrotate_stats` WHERE `ad` = ".$meta->ad.";");
-				$wpdb->query("DELETE FROM `{$wpdb->prefix}adrotate_linkmeta` WHERE `ad` = ".$meta->ad.";");
+				adrotate_delete($meta->ad, 'banner');
 			}
-			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_groups` WHERE `id` = %d;", $id));
-			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_linkmeta` WHERE `group` = %d;", $id));
-			$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_stats` WHERE `group` = %d;", $id)); // Perhaps unnessesary
-			adrotate_prepare_evaluate_ads(false);
+			unset($linkmeta);
+			adrotate_delete($id, 'group');
 		}
 	}
 }
 
 /*-------------------------------------------------------------
  Name:      adrotate_active
-
  Purpose:   Activate or Deactivate a banner
- Receive:   $id, $what
- Return:    -none-
  Since:		0.1
 -------------------------------------------------------------*/
 function adrotate_active($id, $what) {
@@ -504,8 +472,8 @@ function adrotate_active($id, $what) {
 		if ($what == 'activate') {
 			// Determine status of ad 
 			$adstate = adrotate_evaluate_ad($id);
-			if($adstate == 'error' OR $adstate == 'expired') $adtype = 'error';
-				else $adtype = 'active';
+			$adtype = ($adstate == 'error' OR $adstate == 'expired') ? 'error' : 'active';
+
 			$wpdb->update($wpdb->prefix.'adrotate', array('type' => $adtype), array('id' => $id));
 		}
 	}
@@ -513,10 +481,7 @@ function adrotate_active($id, $what) {
 
 /*-------------------------------------------------------------
  Name:      adrotate_reset
-
  Purpose:   Reset statistics for a banner
- Receive:   $id
- Return:    -none-
  Since:		2.2
 -------------------------------------------------------------*/
 function adrotate_reset($id) {
@@ -524,16 +489,12 @@ function adrotate_reset($id) {
 
 	if($id > 0) {
 		$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_stats` WHERE `ad` = %d", $id));
-		$wpdb->query($wpdb->prepare("DELETE FROM `{$wpdb->prefix}adrotate_tracker` WHERE `bannerid` = %d", $id));
 	}
 }
 
 /*-------------------------------------------------------------
  Name:      adrotate_renew
-
  Purpose:   Renew the end date of a banner with a new schedule starting where the last ended
- Receive:   $id, $howlong
- Return:    -none-
  Since:		2.2
 -------------------------------------------------------------*/
 function adrotate_renew($id, $howlong = 2592000) {
@@ -554,10 +515,7 @@ function adrotate_renew($id, $howlong = 2592000) {
 
 /*-------------------------------------------------------------
  Name:      adrotate_export
-
  Purpose:   Export selected banners
- Receive:   $id
- Return:    -none-
  Since:		3.8.5
 -------------------------------------------------------------*/
 function adrotate_export($ids, $format) {
@@ -568,10 +526,7 @@ function adrotate_export($ids, $format) {
 
 /*-------------------------------------------------------------
  Name:      adrotate_options_submit
-
  Purpose:   Save options from dashboard
- Receive:   $_POST
- Return:    -none-
  Since:		0.1
 -------------------------------------------------------------*/
 function adrotate_options_submit() {
@@ -586,14 +541,13 @@ function adrotate_options_submit() {
 			$config['jquery'] = (isset($_POST['adrotate_jquery'])) ? 'Y' : 'N';
 			$config['jsfooter'] = (isset($_POST['adrotate_jsfooter'])) ? 'Y' : 'N';
 
-			// Turn options off. Available in AdRotate Pro only
+			// Turn options off/reset them. Available in AdRotate Pro only
 			$config['textwidget_shortcodes'] = "N";
-			$config['banner_folder'] = "wp-content/banners/";
+			$wpcontent = explode('/', WP_CONTENT_DIR);
+			$wpcontent = end($wpcontent);
+			$config['banner_folder'] = $wpcontent."/banners/";
 			$config['notification_email'] = array();
 			$config['advertiser_email'] = array();
-			$config['adblock'] = 'N';
-			$config['adblock_timer'] = 0;
-			$config['adblock_message'] = '';
 			$config['enable_geo'] = 0;
 			$config['geo_cookie_life'] = 86400;
 			$config['geo_email'] = '';
@@ -601,10 +555,6 @@ function adrotate_options_submit() {
 			$config['enable_advertisers'] = 'N';
 			$config['enable_editing'] = 'N';
 			$config['enable_geo_advertisers'] = 0;
-			$config['adblock'] = 'N';	
-			$config['adblock_loggedin'] = 'N';
-			$config['adblock_timer'] = 5;
-			$config['adblock_message'] = "Ad blocker detected! Please wait %time% seconds or disable your ad blocker!";
 			update_option('adrotate_config', $config);
 
 			// Sort out crawlers
@@ -615,23 +565,35 @@ function adrotate_options_submit() {
 				if(strlen($crawler) > 0) $new_crawlers[] = $crawler;
 			}
 			update_option('adrotate_crawlers', $new_crawlers);
+		}
 
+		if($settings_tab == 'notifications') {  
 			$notifications = get_option('adrotate_notifications');
+
+			$notifications['notification_dash'] = (isset($_POST['adrotate_notification_dash'])) ? 'Y' : 'N';
+
+			// Dashboard Notifications
+			$notifications['notification_dash_expired'] = (isset($_POST['adrotate_notification_dash_expired'])) ? 'Y' : 'N';
+			$notifications['notification_dash_soon'] = (isset($_POST['adrotate_notification_dash_soon'])) ? 'Y' : 'N';
 
 			// Turn options off. Available in AdRotate Pro only
 			$notifications['notification_email'] = 'N';
 			$notifications['notification_push'] = 'N';
-			$notifications['notification_dashboard'] = 'Y';
-			$notifications['notification_email_publisher'] = array();
+			$notifications['notification_email_publisher'] = array(get_option('admin_email'));
 			$notifications['notification_email_advertiser'] = array(get_option('admin_email'));
+			$notifications['notification_mail_geo'] = 'N';
+			$notifications['notification_mail_status'] = 'N';
+			$notifications['notification_mail_queue'] = 'N';
+			$notifications['notification_mail_approved'] = 'N';
+			$notifications['notification_mail_rejected'] = 'N';
+			$notifications['notification_push_user'] = '';
+			$notifications['notification_push_api'] = '';
 			$notifications['notification_push_geo'] = 'N';
 			$notifications['notification_push_status'] = 'N';
 			$notifications['notification_push_queue'] = 'N';
 			$notifications['notification_push_approved'] = 'N';
-			$notifications['notification_push_rejected'] = 'N';
-			$notifications['notification_push_user'] = '';		
-			$notifications['notification_push_api'] = '';
-		
+			$notifications['notification_push_rejected'] = 'N';		
+
 			update_option('adrotate_notifications', $notifications);
 		}
 
@@ -698,10 +660,7 @@ function adrotate_options_submit() {
 
 /*-------------------------------------------------------------
  Name:      adrotate_prepare_roles
-
  Purpose:   Prepare user roles for WordPress
- Receive:   $action
- Return:    -None-
  Since:		3.0
 -------------------------------------------------------------*/
 function adrotate_prepare_roles($action) {

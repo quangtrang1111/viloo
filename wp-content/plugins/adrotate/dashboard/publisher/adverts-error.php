@@ -9,7 +9,7 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('Ads that need immediate attention', 'adrotate'); ?></h3>
+<h3><?php _e('Adverts that need attention', 'adrotate'); ?></h3>
 
 <form name="errorbanners" id="post" method="post" action="admin.php?page=adrotate-ads">
 	<?php wp_nonce_field('adrotate_bulk_ads_error','adrotate_nonce'); ?>

@@ -147,127 +147,6 @@ function adrotate_is_tablet() {
 }
 
 /*-------------------------------------------------------------
- Name:      adrotate_count_impression
-
- Purpose:   Count Impressions where needed
- Receive:   $ad, $group
- Return:    -None-
- Since:		3.10.12
--------------------------------------------------------------*/
-function adrotate_count_impression($ad, $group = 0, $blog_id = 0, $impression_timer = 0) { 
-	global $wpdb, $adrotate_config, $adrotate_debug;
-
-	if(($adrotate_config['enable_loggedin_impressions'] == 'Y' AND is_user_logged_in()) OR !is_user_logged_in()) {
-		$now = adrotate_now();
-		$today = adrotate_date_start('day');
-		$remote_ip 	= adrotate_get_remote_ip();
-
-		if($adrotate_debug['timers'] == true) {
-			$impression_timer = $now;
-		} else {
-			$impression_timer = $now - $impression_timer;
-		}
-
-		$saved_timer = $wpdb->get_var($wpdb->prepare("SELECT `timer` FROM `".$wpdb->prefix."adrotate_tracker` WHERE `ipaddress` = '%s' AND `stat` = 'i' AND `bannerid` = %d ORDER BY `timer` DESC LIMIT 1;", $remote_ip, $ad));
-		if($saved_timer < $impression_timer AND adrotate_is_human()) {
-			$stats = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM `".$wpdb->prefix."adrotate_stats` WHERE `ad` = %d AND `group` = %d AND `thetime` = $today;", $ad, $group));
-			if($stats > 0) {
-				$wpdb->query("UPDATE `".$wpdb->prefix."adrotate_stats` SET `impressions` = `impressions` + 1 WHERE `id` = $stats;");
-			} else {
-				$wpdb->insert($wpdb->prefix.'adrotate_stats', array('ad' => $ad, 'group' => $group, 'thetime' => $today, 'clicks' => 0, 'impressions' => 1));
-			}
-
-			$wpdb->insert($wpdb->prefix."adrotate_tracker", array('ipaddress' => $remote_ip, 'timer' => $now, 'bannerid' => $ad, 'stat' => 'i', 'country' => '', 'city' => ''));
-		}
-	}
-} 
-
-/*-------------------------------------------------------------
- Name:      adrotate_impression_callback
-
- Purpose:   Register a impression for dynamic groups
- Receive:   $_POST
- Return:    -None-
- Since:		3.10.14
--------------------------------------------------------------*/
-function adrotate_impression_callback() {
-	define('DONOTCACHEPAGE', true);
-	define('DONOTCACHEDB', true);
-	define('DONOTCACHCEOBJECT', true);
-
-	global $adrotate_debug;
-
-	$meta = $_POST['track'];
-	if($adrotate_debug['track'] != true) {
-		$meta = base64_decode($meta);
-	}
-
-	$meta = esc_attr($meta);
-	list($ad, $group, $blog_id, $impression_timer) = explode(",", $meta, 4);
-	adrotate_count_impression($ad, $group, $blog_id, $impression_timer);
-
-	wp_die();
-}
-
-
-/*-------------------------------------------------------------
- Name:      adrotate_click_callback
-
- Purpose:   Register clicks for clicktracking
- Receive:   $_POST
- Return:    -None-
- Since:		3.10.14
--------------------------------------------------------------*/
-function adrotate_click_callback() {
-	define('DONOTCACHEPAGE', true);
-	define('DONOTCACHEDB', true);
-	define('DONOTCACHCEOBJECT', true);
-
-	global $wpdb, $adrotate_config, $adrotate_debug;
-
-	$meta = $_POST['track'];
-
-	if($adrotate_debug['track'] != true) {
-		$meta = base64_decode($meta);
-	}
-	
-	$meta = esc_attr($meta);
-	list($ad, $group, $blog_id, $impression_timer) = explode(",", $meta, 4);
-
-	if(is_numeric($ad) AND is_numeric($group) AND is_numeric($blog_id)) {
-		if(($adrotate_config['enable_loggedin_clicks'] == 'Y' AND is_user_logged_in()) OR !is_user_logged_in()) {	
-			$remote_ip = adrotate_get_remote_ip();
-
-			if(adrotate_is_human() AND $remote_ip != "unknown" AND !empty($remote_ip)) {
-				$now = adrotate_now();
-				$today = adrotate_date_start('day');
-
-				if($adrotate_debug['timers'] == true) {
-					$click_timer = $now;
-				} else {
-					$click_timer = $now - $adrotate_config['click_timer'];
-				}
-	
-				$saved_timer = $wpdb->get_var($wpdb->prepare("SELECT `timer` FROM `".$wpdb->prefix."adrotate_tracker` WHERE `ipaddress` = '%s' AND `stat` = 'c' AND `bannerid` = %d ORDER BY `timer` DESC LIMIT 1;", $remote_ip, $ad));
-				if($saved_timer < $click_timer) {
-					$stats = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM `".$wpdb->prefix."adrotate_stats` WHERE `ad` = %d AND `group` = %d AND `thetime` = $today;", $ad, $group));
-					if($stats > 0) {
-						$wpdb->query("UPDATE `".$wpdb->prefix."adrotate_stats` SET `clicks` = `clicks` + 1 WHERE `id` = $stats;");
-					} else {
-						$wpdb->insert($wpdb->prefix.'adrotate_stats', array('ad' => $ad, 'group' => $group, 'thetime' => $today, 'clicks' => 1, 'impressions' => 1));
-					}
-
-					$wpdb->insert($wpdb->prefix.'adrotate_tracker', array('ipaddress' => $remote_ip, 'timer' => $now, 'bannerid' => $ad, 'stat' => 'c', 'country' => '', 'city' => ''));
-				}
-			}
-		}
-
-		unset($remote_ip, $track, $meta, $ad, $group, $remote, $banner);
-	}
-
-	wp_die();
-}
-/*-------------------------------------------------------------
  Name:      adrotate_filter_schedule
 
  Purpose:   Weed out ads that are over the limit of their schedule
@@ -400,9 +279,7 @@ function adrotate_select_categories($savedcats, $count = 2, $child_of = 0, $pare
 		$output = '';
 		if($parent == 0) {
 			$output = '<table width="100%">';
-			if(count($categories) > 5) {
-				$output .= '<thead><tr><td scope="col" class="manage-column check-column" style="padding: 0px;"><input type="checkbox" /></td><td style="padding: 0px;">Select All</td></tr></thead>';
-			}
+			$output .= '<thead><tr><td scope="col" class="manage-column check-column" style="padding: 0px;"><input type="checkbox" /></td><td style="padding: 0px;">Select All</td></tr></thead>';
 			$output .= '<tbody>';
 		}
 		foreach($categories as $category) {
@@ -486,18 +363,11 @@ function adrotate_select_pages($savedpages, $count = 2, $child_of = 0, $parent =
  Return:    
  Since:		3.6.5
 -------------------------------------------------------------*/
-function adrotate_prepare_evaluate_ads($return = true, $id = 0) {
+function adrotate_prepare_evaluate_ads($return = true) {
 	global $wpdb;
 	
-	$getid = '';
-	if($id > 0) {
-		$getid = " AND `id` = {$id}";
-	} else {
-		$getid = " AND `type` != 'empty'";
- 	}
-	
 	// Fetch ads
-	$ads = $wpdb->get_results("SELECT `id` FROM `".$wpdb->prefix."adrotate` WHERE `type` != 'disabled'{$getid} ORDER BY `id` ASC;");
+	$ads = $wpdb->get_results("SELECT `id` FROM `".$wpdb->prefix."adrotate` WHERE `type` != 'disabled' AND `type` != 'empty' ORDER BY `id` ASC;");
 
 	// Determine error states
 	$error = $expired = $expiressoon = $normal = $unknown = 0;
@@ -533,17 +403,9 @@ function adrotate_prepare_evaluate_ads($return = true, $id = 0) {
 		}
 	}
 
-	$count = $expired + $expiressoon + $error;
-	$result = array('error' => $error,
-					'expired' => $expired,
-					'expiressoon' => $expiressoon,
-					'normal' => $normal,
-					'total' => $count,
-					'unknown' => $unknown
-					);
-
+	$result = array('error' => $error, 'expired' => $expired, 'expiressoon' => $expiressoon, 'normal' => $normal, 'unknown' => $unknown);
 	update_option('adrotate_advert_status', $result);
-	if($return) adrotate_return('adrotate-settings', 405);
+	if($return) adrotate_return('adrotate-settings', 405, array('tab' => 'maintenance'));
 }
 
 /*-------------------------------------------------------------
@@ -555,6 +417,7 @@ function adrotate_prepare_evaluate_ads($return = true, $id = 0) {
  Since:		3.8.5.1
 -------------------------------------------------------------*/
 function adrotate_evaluate_ads() {
+	// Verify all ads
 	adrotate_prepare_evaluate_ads(false);
 }
 
@@ -583,10 +446,8 @@ function adrotate_evaluate_ad($ad_id) {
 	if(
 		strlen($bannercode) < 1 // AdCode empty
 		OR (!preg_match_all('/<(a|script|embed|iframe)[^>](.*?)>/i', $bannercode, $things) AND $ad->tracker == 'Y') // Clicktracking active but no valid link/tag present
-		OR (preg_match("/%image%/i", $bannercode) AND $ad->image == '' AND $ad->imagetype == '') // Did use %image% but didn't select an image
-		OR (!preg_match("/%image%/i", $bannercode) AND $ad->image != '' AND $ad->imagetype != '') // Didn't use %image% but selected an image
-		OR (!preg_match("/%image%/i", $bannercode) AND $ad->responsive == 'Y') // Didn't use %image% but enabled Responsive
-		OR (strlen($ad->image) > 0 AND !preg_match("/full/", $ad->image) AND $ad->responsive == 'Y') // Filename not correct for Responsive
+		OR (preg_match_all("/(%image%|%asset%)/i", $bannercode, $things) AND $ad->image == '' AND $ad->imagetype == '') // Did use %image% but didn't select an image
+		OR (!preg_match_all("/(%image%|%asset%)/i", $bannercode, $things) AND $ad->image != '' AND $ad->imagetype != '') // Didn't use %image% but selected an image
 		OR (($ad->image == '' AND $ad->imagetype != '') OR ($ad->image != '' AND $ad->imagetype == '')) // Image and Imagetype mismatch
 		OR $schedules == 0 // No Schedules for this ad
 	) {

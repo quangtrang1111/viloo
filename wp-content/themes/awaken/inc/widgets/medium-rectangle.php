@@ -100,11 +100,7 @@ class Awaken_Medium_Rectangle_Ad extends WP_Widget {
 
 		<div class="awaken-medium-rectangle-widget">
 			<figure>
-                <!-- <a href="<?php echo $dest_url ?>"><img src="<?php echo $img_url; ?>"></a> -->
-                
-                <!--QuangTrang-->
-                <?php echo adrotate_ad(3); ?>
-                <!--QuangTrangEnd-->
+				<a href="<?php echo $dest_url ?>"><img src="<?php echo $img_url; ?>"></a>
 			</figure>
 		</div>
 

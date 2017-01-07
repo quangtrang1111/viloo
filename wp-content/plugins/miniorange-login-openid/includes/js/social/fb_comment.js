@@ -40,7 +40,8 @@ jQuery(window).load(function () {
 });
 
 function moOpenidLoadCommentScript(){
-	var d = document.createElement("div");
+	var d;
+	d = document.createElement("div");
 	d.id = "fb-root";
 	document.body.appendChild(d);
 	var sfb = document.createElement("script");

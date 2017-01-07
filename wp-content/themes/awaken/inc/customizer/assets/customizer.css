@@ -152,3 +152,11 @@ Header Settings
 #accordion-section-awaken_pro_details h3.accordion-section-title:before {
 	content: '\f219';
 }  
+
+#accordion-section-themes h3.accordion-section-title:before {
+	display: none;
+}
+
+#accordion-section-themes h3.accordion-section-title {
+	padding-left: 14px;
+}

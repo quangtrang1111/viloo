@@ -52,6 +52,21 @@ jQuery(document).ready(function () {
     jQuery("#openid_question13").click(function () {
         jQuery("#openid_question13_desc").slideToggle(400);
     });
+    jQuery("#openid_question14").click(function () {
+        jQuery("#openid_question14_desc").slideToggle(400);
+    });
+    jQuery("#openid_question15").click(function () {
+        jQuery("#openid_question15_desc").slideToggle(400);
+    });
+    jQuery("#openid_question16").click(function () {
+        jQuery("#openid_question16_desc").slideToggle(400);
+    });
+    jQuery("#openid_question17").click(function () {
+        jQuery("#openid_question17_desc").slideToggle(400);
+    });
+    jQuery("#openid_question18").click(function () {
+        jQuery("#openid_question18_desc").slideToggle(400);
+    });
 	jQuery("#openid_question_curl").click(function () {
     	jQuery("#openid_question_curl_desc").slideToggle(400);
     });
@@ -64,7 +79,10 @@ jQuery(document).ready(function () {
 	jQuery("#openid_question_sharing").click(function () {
     	jQuery("#openid_question_sharing_desc").slideToggle(400);
     });
-	jQuery("#openid_question_logout").click(function () {
-    	jQuery("#openid_question_logout_desc").slideToggle(400);
+	jQuery("#openid_question_payment").click(function () {
+    	jQuery("#openid_question_payment_desc").slideToggle(400);
+    });
+    jQuery("#openid_question_plugin").click(function () {
+        jQuery("#openid_question_plugin_desc").slideToggle(400);
     });
 });

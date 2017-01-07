@@ -27,15 +27,22 @@ if ( !function_exists( 'awaken_featured_posts' ) ) :
 
                                 <li>
                                     <div class="awaken-slider-container">
-                                        <?php if ( has_post_thumbnail() ) { ?>
-                                            <?php the_post_thumbnail( 'featured-slider' ); ?>
-                                        <?php } else { ?>
-                                            <img src="<?php echo get_template_directory_uri() . '/images/slide.jpg' ?>">
-                                        <?php } ?>
-
-                                        <div class="awaken-slider-details-container">
-                                            <a href="<?php the_permalink(); ?>" rel="bookmark"><h1 class="awaken-slider-title"><?php the_title(); ?></h1></a>
-                                        </div>
+                                        <?php
+                                            if ( has_post_thumbnail() ) {
+                                                $thumb_id           = get_post_thumbnail_id();
+                                                $thumb_url_array    = wp_get_attachment_image_src($thumb_id, 'featured-slider', true);
+                                                $featured_image_url = $thumb_url_array[0]; 
+                                            } else {
+                                                $featured_image_url = get_template_directory_uri() . '/images/slide.jpg';
+                                            }
+                                        ?>
+                                        <div class="awaken-slide-holder" style="background: url(<?php echo $featured_image_url; ?>);">
+                                            <div class="awaken-slide-content">
+                                                <div class="awaken-slider-details-container">
+                                                    <a href="<?php the_permalink(); ?>" rel="bookmark"><h3 class="awaken-slider-title"><?php the_title(); ?></h3></a>
+                                                </div>
+                                            </div><!-- .awaken-slide-content -->
+                                        </div><!--.awaken-slide-holder-->
                                     </div>
                                 </li>
 
@@ -47,36 +54,50 @@ if ( !function_exists( 'awaken_featured_posts' ) ) :
             <div class="awaken-featured-posts">
                 <?php
 
-                $fposts_category = get_theme_mod( 'featured_posts_category', '' );
+                $method = get_theme_mod( 'fposts_display_method', 'category' );
 
-                $fposts = new WP_Query( array(
-                    'posts_per_page' => 2,
-                    'cat'	=>	$fposts_category,
-                    'ignore_sticky_posts' => 1
-                ));
+                if ( $method == "sticky" ) {
+                    
+                    $args = array(
+                        'posts_per_page'        => 2,
+                        'post__in'              => get_option( 'sticky_posts' ),
+                        'ignore_sticky_posts'   => 1
+                    );
+
+                } else {
+                    
+                    $fposts_category = get_theme_mod( 'featured_posts_category', '' );
+
+                    $args = array(
+                        'posts_per_page'        => 2,
+                        'cat'                   => $fposts_category,
+                        'ignore_sticky_posts'   => 1
+                    );
+
+                }
+
+                $fposts = new WP_Query( $args );
 
                 while( $fposts->have_posts() ) : $fposts->the_post(); ?>
 
                     <div class="afp">
-                        <figure class="afp-thumbnail">
-                            <?php if ( has_post_thumbnail() ) { ?>
-                                <a href="<?php the_permalink(); ?>" title="<?php the_title(); ?>"><?php the_post_thumbnail( 'featured', array('title' => get_the_title()) ); ?></a>
-                            <?php } else { ?>
-                                <a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title(); ?>"><img  src="<?php echo get_template_directory_uri(); ?>/images/featured.jpg" alt="<?php the_title(); ?>" /></a>
-                            <?php } ?>
-                        </figure>
-                        <div class="afp-title">
-                            <a href="<?php the_permalink(); ?>" rel="bookmark"><?php the_title(); ?></a>
-                        </div>
-                    </div>
-                    
-<!--QuangTrang
-                    <div class="afp">
-                        <figure class="afp-thumbnail">
-                            <?php echo adrotate_ad(2); ?>
-                        </figure>                     
-                    </div>
-QuangTrangEnd-->
+                        <?php
+                            if ( has_post_thumbnail() ) {
+                                $thumb_id           = get_post_thumbnail_id();
+                                $thumb_url_array    = wp_get_attachment_image_src($thumb_id, 'featured', true);
+                                $featured_image_url = $thumb_url_array[0]; 
+                            } else {
+                                $featured_image_url = get_template_directory_uri() . '/images/featured.jpg';
+                            }
+                        ?>                    
+                        <div class="afpi-holder" style="background: url(<?php echo $featured_image_url; ?>);">
+                            <div class="afp-content">
+                                <div class="afp-title">
+                                    <a href="<?php the_permalink(); ?>" rel="bookmark"><?php the_title(); ?></a>
+                                </div>
+                            </div><!-- .afp-content -->
+                        </div><!-- .afpi-holder -->
+                    </div><!-- .afp -->
 
                 <?php endwhile; ?>
 

@@ -180,27 +180,24 @@ abstract class AAM_Core_Subject {
     public function getObject($objectType, $id = 'none') {
         $object = null;
         
-        //make sure that object group is defined
-        if (!isset($this->_objects[$objectType])){
-            $this->_objects[$objectType] = array();
-        }
+        $nid = (is_scalar($id) ? $id : 'none'); //prevent from any surprises
         
         //check if there is an object with specified ID
-        if (!isset($this->_objects[$objectType][$id])) {
+        if (!isset($this->_objects[$objectType][$nid])) {
             $classname = 'AAM_Core_Object_' . ucfirst($objectType);
             if (class_exists($classname)) {
-                $object = new $classname($this, $id);
+                $object = new $classname($this, $nid);
             } else {
                 $object = apply_filters(
-                        'aam-object-filter', null, $objectType, $id, $this
+                        'aam-object-filter', null, $objectType, $nid, $this
                 );
             }
             
             if ($object instanceof AAM_Core_Object) {
-                $this->_objects[$objectType][$id] = $object;
+                $this->_objects[$objectType][$nid] = $object;
             }
         } else {
-            $object = $this->_objects[$objectType][$id];
+            $object = $this->_objects[$objectType][$nid];
         }
 
         return $object;
@@ -291,7 +288,9 @@ abstract class AAM_Core_Subject {
      * 
      * @access public
      */
-    abstract public function getParent();
+    public function getParent() {
+        return null;
+    }
     
     /**
      * Check if subject has parent

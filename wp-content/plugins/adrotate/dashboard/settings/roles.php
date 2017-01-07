@@ -9,7 +9,12 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('Roles', 'adrotate'); ?></h3>
+
+<form name="settings" id="post" method="post" action="admin.php?page=adrotate-settings&tab=roles">
+<?php wp_nonce_field('adrotate_settings','adrotate_nonce_settings'); ?>
+<input type="hidden" name="adrotate_settings_tab" value="<?php echo $active_tab; ?>" />
+
+<h2><?php _e('Roles', 'adrotate'); ?></h2>
 <span class="description"><?php _e('Who has access to what?', 'adrotate'); ?></span>
 <table class="form-table">
 	<tr>
@@ -45,3 +50,8 @@
 		</td>
 	</tr>
 </table>
+
+<p class="submit">
+  	<input type="submit" name="adrotate_save_options" class="button-primary" value="<?php _e('Update Options', 'adrotate'); ?>" />
+</p>
+</form>

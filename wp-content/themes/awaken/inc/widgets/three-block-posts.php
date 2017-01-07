@@ -105,7 +105,7 @@ class awaken_three_block_posts extends WP_Widget {
 		$title = ( ! empty( $instance['title'] ) ) ? $instance['title'] : '';
 		$number_posts = ( ! empty( $instance['number_posts'] ) ) ? absint( $instance['number_posts'] )  : 5; 
 		$sticky_posts = ( isset( $instance['sticky_posts'] ) ) ? $instance['sticky_posts'] : false;
-		$category = $instance['category'];
+		$category = ( isset( $instance['category'] ) ) ? $instance['category'] : '';
 		$offset = ( ! empty( $instance['offset'] ) ) ? absint( $instance['offset'] ) : 0;
 		// Latest Posts
 		$latest_posts = new WP_Query( 
@@ -139,7 +139,7 @@ class awaken_three_block_posts extends WP_Widget {
 								<a href="<?php the_permalink(); ?>" rel="bookmark" title="<?php the_title(); ?>"><img  src="<?php echo get_template_directory_uri(); ?>/images/thumbnail-default.jpg" alt="<?php the_title(); ?>" /></a>
 							<?php } ?>
 
-							<?php the_title( sprintf( '<h1 class="genpost-entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h1>' ); ?>						
+							<?php the_title( sprintf( '<h3 class="genpost-entry-title"><a href="%s" rel="bookmark">', esc_url( get_permalink() ) ), '</a></h3>' ); ?>						
 							<?php if ( 'post' == get_post_type() ) : ?>
 								<div class="genpost-entry-meta">
 									<?php awaken_posted_on(); ?>

@@ -27,105 +27,34 @@ function adrotate_draw_graph($id = 0, $labels = 0, $clicks = 0, $impressions = 0
 		jQuery(document).ready(function(){
 			jQuery("#chart-'.$id.'").chart({ 
 			    type: "line",
-			    margins: [5, 45, 25, 45],
+			    margins: [5, 45, 45, 45],
 		        values: {
-		            serie1: ['.$clicks.'],
-		            serie2: ['.$impressions.']
+		            serie1: ['.$clicks.'], serie2: ['.$impressions.']
 		        },
         		labels: ['.$labels.'],
 			    tooltips: function(env, serie, index, value, label) {
-			        return "<div class=\"adrotate-label\"><span class=\"adrotate-clicks\">Clicks:</span> " + env.opt.values[\'serie1\'][index] + "<br /><span class=\"adrotate-impressions\">Impressions:</span> " + env.opt.values[\'serie2\'][index] + "</div>";
+			        return "<div class=\"adrotate_label\">" + label + "<br /><span class=\"adrotate_clicks\">Clicks:</span> " + env.opt.values[\'serie1\'][index] + "<br /><span class=\"adrotate_impressions\">Impressions:</span> " + env.opt.values[\'serie2\'][index] + "</div>";
 			    },
 			    defaultSeries: {
-			        plotProps: {
-			            "stroke-width": 3
-			        },
-			        dot: true,
-			        rounded: true,
-			        dotProps: {
-			            stroke: "white",
-			            size: 5,
-			            "stroke-width": 1,
-			            opacity: 0 // dots invisible until we hover it
-			        },
-			        highlight: {
-			            scaleSpeed: 0, // do not animate the dot scaling. instant grow.
-			            scaleEasing: "",
-			            scale: 1.2, // enlarge the dot on hover
-			            newProps: {
-			                opacity: 1 // show dots on hover
-			            }
-			        },
-			        tooltip: {
-			            height: 40,
-			            width: 120,
-			            padding: [0],
-			            offset: [-10, -10],
-			            frameProps: {
-			                opacity: 0.95,
-			                stroke: "#000"
-			
-			            }
-			        }
+					plotProps: { "stroke-width": 3 }, dot: true, rounded: true, dotProps: { stroke: "white", size: 5, "stroke-width": 1, opacity: 0 }, highlight: { scaleSpeed: 0, scaleEasing: "", scale: 1.2, newProps: { opacity: 1 } }, tooltip: { height: 55, width: 120, padding: [0], offset: [-10, -10], frameProps: { opacity: 0.95, stroke: "#000" } }
 			    },
 			    series: {
 			        serie1: {
-			            fill: true,
-			            fillProps: {
-			                opacity: .1
-			            },
-			            color: "#26B",
+			            fill: true, fillProps: { opacity: .1 }, color: "#26B",
 			        },
 			        serie2: {
-			            axis: "r",
-			            color: "#F80",
-			            plotProps: {
-			                "stroke-width": 2
-			            },
-			            dotProps: {
-			                stroke: "white",
-			                size: 3,
-			                "stroke-width": 1
-			            }
+			            axis: "r", color: "#F80", plotProps: { "stroke-width": 2 }, dotProps: { stroke: "white", size: 3, "stroke-width": 1 }
 			        }
-			
 			    },
 			    defaultAxis: {
-			        labels: true,
-			        labelsProps: {
-			            fill: "#777",
-			            "font-size": "10px"
-			        },
-			        labelsAnchor: "start",
-			        labelsMargin: 5,
-			        labelsDistance: 8
+			        labels: true, labelsProps: { fill: "#777", "font-size": "10px", }, labelsAnchor: "start", labelsMargin: 5, labelsDistance: 8, labelsRotate: 65
 			    },
  			    axis: {
 			        l: { // left axis
-			            labels: true,
-			            labelsDistance: 0,
-			            labelsSkip: 1,
-			            labelsAnchor: "end",
-			            labelsMargin: 15,
-				        labelsDistance: 4,
-			            labelsProps: {
-			                fill: "#26B",
-			                "font-size": "11px",
-			                "font-weight": "bold"
-			            }
+			            labels: true, labelsDistance: 0, labelsSkip: 1, labelsAnchor: "end", labelsMargin: 15, labelsDistance: 4, labelsProps: { fill: "#26B", "font-size": "11px", "font-weight": "bold" }
 			        },
 			        r: { // right axis
-			            labels: true,
-			            labelsDistance: 0,
-			            labelsSkip: 1,
-			            labelsAnchor: "start",
-			            labelsMargin: 15,
-				        labelsDistance: 4,
-			            labelsProps: {
-			                fill: "#F80",
-			                "font-size": "11px",
-			                "font-weight": "bold"
-			            }
+			            labels: true, labelsDistance: 0, labelsSkip: 1, labelsAnchor: "start", labelsMargin: 15, labelsDistance: 4, labelsProps: { fill: "#F80", "font-size": "11px", "font-weight": "bold" }
 			        }
 			    },
 			    features: {
@@ -167,7 +96,8 @@ function adrotate_stats($ad, $when = 0, $until = 0) {
 	if($when > 0 AND is_numeric($when) AND $until > 0 AND is_numeric($until)) {
 		$whenquery =  " AND `thetime` >= '$when' AND `thetime` <= '$until' GROUP BY `ad` ASC";
 	} else if($when > 0 AND is_numeric($when) AND $until == 0) {
-		$whenquery =  " AND `thetime` = '$when'";
+		$until = $when + 86400;
+		$whenquery =  " AND `thetime` >= '$when' AND `thetime` <= '$until'";
 	} else {
 		$whenquery = "";
 	}
@@ -183,7 +113,7 @@ function adrotate_stats($ad, $when = 0, $until = 0) {
 	} else {
 		$ad_query = '`ad` = '.$ad;
 	}
-	$stats = $wpdb->get_row("SELECT SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `".$wpdb->prefix."adrotate_stats` WHERE $ad_query $whenquery;", ARRAY_A);
+	$stats = $wpdb->get_row("SELECT SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `{$wpdb->prefix}adrotate_stats` WHERE {$ad_query}{$whenquery};", ARRAY_A);
 
 	if(empty($stats['clicks'])) $stats['clicks'] = '0';
 	if(empty($stats['impressions'])) $stats['impressions'] = '0';
@@ -239,19 +169,19 @@ function adrotate_stats_graph($type, $id, $chartid, $start, $end) {
 	global $wpdb;
 
 	if($type == 'ads' OR $type == 'advertiser') {
-		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `".$wpdb->prefix."adrotate_stats` WHERE `ad` = %d AND `thetime` >= %d AND `thetime` <= %d GROUP BY `thetime` ASC;", $id, $start, $end), ARRAY_A);
+		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `{$wpdb->prefix}adrotate_stats` WHERE `ad` = %d AND `thetime` >= %d AND `thetime` <= %d GROUP BY `thetime` ASC;", $id, $start, $end), ARRAY_A);
 	}
 
 	if($type == 'groups') {
-		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `".$wpdb->prefix."adrotate_stats` WHERE `group` = %d AND `thetime` >= %d AND `thetime` <= %d GROUP BY `thetime` ASC;", $id, $start, $end), ARRAY_A);
+		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `{$wpdb->prefix}adrotate_stats` WHERE `group` = %d AND `thetime` >= %d AND `thetime` <= %d GROUP BY `thetime` ASC;", $id, $start, $end), ARRAY_A);
 	}
 
 	if($type == 'global-report') {
-		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `".$wpdb->prefix."adrotate_stats` WHERE `thetime` >= %d AND `thetime` <= %d GROUP BY `thetime` ASC;", $start, $end), ARRAY_A);
+		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `{$wpdb->prefix}adrotate_stats` WHERE `thetime` >= %d AND `thetime` <= %d GROUP BY `thetime` ASC;", $start, $end), ARRAY_A);
 	}
 	
 	if($type == 'advertiser-global') {
-		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `".$wpdb->prefix."adrotate_stats`, `".$wpdb->prefix."adrotate_linkmeta` WHERE `".$wpdb->prefix."adrotate_stats`.`ad` = `".$wpdb->prefix."adrotate_linkmeta`.`ad` AND `".$wpdb->prefix."adrotate_linkmeta`.`user` = %d AND (`".$wpdb->prefix."adrotate_stats`.`thetime` >= %d AND `".$wpdb->prefix."adrotate_stats`.`thetime` <= %d) GROUP BY `thetime` ASC;", $id, $start, $end), ARRAY_A);
+		$stats = $wpdb->get_results($wpdb->prepare("SELECT `thetime`, SUM(`clicks`) as `clicks`, SUM(`impressions`) as `impressions` FROM `{$wpdb->prefix}adrotate_stats`, `{$wpdb->prefix}adrotate_linkmeta` WHERE `{$wpdb->prefix}adrotate_stats`.`ad` = `{$wpdb->prefix}adrotate_linkmeta`.`ad` AND `{$wpdb->prefix}adrotate_linkmeta`.`user` = %d AND (`{$wpdb->prefix}adrotate_stats`.`thetime` >= %d AND `{$wpdb->prefix}adrotate_stats`.`thetime` <= %d) GROUP BY `thetime` ASC;", $id, $start, $end), ARRAY_A);
 	}
 
 	if($stats) {
@@ -355,5 +285,139 @@ function adrotate_date_start($what) {
 -------------------------------------------------------------*/
 function adrotate_now() {
 	return time() + (get_option('gmt_offset') * HOUR_IN_SECONDS);
+}
+
+/*-------------------------------------------------------------
+ Name:      adrotate_count_impression
+
+ Purpose:   Count Impressions where needed
+ Receive:   $ad, $group
+ Return:    -None-
+ Since:		3.10.12
+-------------------------------------------------------------*/
+function adrotate_count_impression($ad, $group = 0, $blog_id = 0) { 
+	global $wpdb, $adrotate_config, $adrotate_debug;
+
+	if(($adrotate_config['enable_loggedin_impressions'] == 'Y' AND is_user_logged_in()) OR !is_user_logged_in()) {
+		$now = adrotate_now();
+		$hour = adrotate_date_start('hour');
+		$remote_ip 	= adrotate_get_remote_ip();
+
+		if($adrotate_debug['timers'] == true) {
+			$impression_timer = $now;
+		} else {
+			$impression_timer = $now - $adrotate_config['impression_timer'];
+		}
+
+		$transientkey = "adrotate_impression_".md5($ad.$remote_ip);
+		$saved_timer = get_transient($transientkey);
+		if(false === $saved_timer) {
+			$saved_timer = 0;
+		}
+
+		if($saved_timer < $impression_timer AND adrotate_is_human()) {
+			$stats = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM `{$wpdb->prefix}adrotate_stats` WHERE `ad` = %d AND `group` = %d AND `thetime` = {$hour};", $ad, $group));
+			if($stats > 0) {
+				$wpdb->query("UPDATE `{$wpdb->prefix}adrotate_stats` SET `impressions` = `impressions` + 1 WHERE `id` = {$stats};");
+			} else {
+				$wpdb->insert($wpdb->prefix.'adrotate_stats', array('ad' => $ad, 'group' => $group, 'thetime' => $hour, 'clicks' => 0, 'impressions' => 1));
+			}
+
+			set_transient($transientkey, $now, $adrotate_config['impression_timer']);
+		}
+	}
+} 
+
+/*-------------------------------------------------------------
+ Name:      adrotate_impression_callback
+
+ Purpose:   Register a impression for dynamic groups
+ Receive:   $_POST
+ Return:    -None-
+ Since:		3.10.14
+-------------------------------------------------------------*/
+function adrotate_impression_callback() {
+	define('DONOTCACHEPAGE', true);
+	define('DONOTCACHEDB', true);
+	define('DONOTCACHCEOBJECT', true);
+
+	global $adrotate_debug;
+
+	$meta = $_POST['track'];
+	if($adrotate_debug['track'] != true) {
+		$meta = base64_decode($meta);
+	}
+
+	$meta = esc_attr($meta);
+	// Don't use $impression_timer - It's for impressions used in javascript
+	list($ad, $group, $blog_id, $impression_timer) = explode(",", $meta, 4);
+	adrotate_count_impression($ad, $group, $blog_id);
+
+	wp_die();
+}
+
+
+/*-------------------------------------------------------------
+ Name:      adrotate_click_callback
+
+ Purpose:   Register clicks for clicktracking
+ Receive:   $_POST
+ Return:    -None-
+ Since:		3.10.14
+-------------------------------------------------------------*/
+function adrotate_click_callback() {
+	define('DONOTCACHEPAGE', true);
+	define('DONOTCACHEDB', true);
+	define('DONOTCACHCEOBJECT', true);
+
+	global $wpdb, $adrotate_config, $adrotate_debug;
+
+	$meta = $_POST['track'];
+
+	if($adrotate_debug['track'] != true) {
+		$meta = base64_decode($meta);
+	}
+	
+	$meta = esc_attr($meta);
+	// Don't use $impression_timer - It's for impressions used in javascript
+	list($ad, $group, $blog_id, $impression_timer) = explode(",", $meta, 4);
+
+	if(is_numeric($ad) AND is_numeric($group) AND is_numeric($blog_id)) {
+		if(($adrotate_config['enable_loggedin_clicks'] == 'Y' AND is_user_logged_in()) OR !is_user_logged_in()) {	
+			$remote_ip = adrotate_get_remote_ip();
+
+			if(adrotate_is_human() AND $remote_ip != "unknown" AND !empty($remote_ip)) {
+				$now = adrotate_now();
+				$hour = adrotate_date_start('hour');
+
+				if($adrotate_debug['timers'] == true) {
+					$click_timer = $now;
+				} else {
+					$click_timer = $now - $adrotate_config['click_timer'];
+				}
+	
+				$transientkey = "adrotate_click_".md5($ad.$remote_ip);
+				$saved_timer = get_transient($transientkey);
+				if(false === $saved_timer) {
+					$saved_timer = 0;
+				}
+
+				if($saved_timer < $click_timer) {
+					$stats = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM `{$wpdb->prefix}adrotate_stats` WHERE `ad` = %d AND `group` = %d AND `thetime` = {$hour};", $ad, $group));
+					if($stats > 0) {
+						$wpdb->query("UPDATE `{$wpdb->prefix}adrotate_stats` SET `clicks` = `clicks` + 1 WHERE `id` = {$stats};");
+					} else {
+						$wpdb->insert($wpdb->prefix.'adrotate_stats', array('ad' => $ad, 'group' => $group, 'thetime' => $hour, 'clicks' => 1, 'impressions' => 1));
+					}
+
+					set_transient($transientkey, $now, $adrotate_config['click_timer']);
+				}
+			}
+		}
+
+		unset($remote_ip, $track, $meta, $ad, $group, $remote, $banner);
+	}
+
+	wp_die();
 }
 ?>

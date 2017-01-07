@@ -1,7 +1,7 @@
 <?php
 /* ------------------------------------------------------------------------------------
 *  COPYRIGHT AND TRADEMARK NOTICE
-*  Copyright 2008-2015 Arnan de Gans. All Rights Reserved.
+*  Copyright 2008-2016 Arnan de Gans. All Rights Reserved.
 *  ADROTATE is a trademark of Arnan de Gans.
 
 *  COPYRIGHT NOTICES AND ALL THE COMMENTS SHOULD REMAIN INTACT.
@@ -13,8 +13,6 @@
  Name:      adrotate_widget
 
  Purpose:   Unlimited widgets for the sidebar
- Receive:   -none-
- Return:    -none-
  Since:		0.8
 -------------------------------------------------------------*/
 class adrotate_widgets extends WP_Widget {
@@ -22,16 +20,18 @@ class adrotate_widgets extends WP_Widget {
 	/*-------------------------------------------------------------
 	 Purpose:   Construct the widget
 	-------------------------------------------------------------*/
-	function adrotate_widgets() {
-
-        parent::__construct(false, 'AdRotate', array('description' => "Show a group of adverts or a single advert in any widget area."));	
-
+	public function __construct() {
+		$widget_ops = array( 
+			'classname' => 'adrotate_widgets',
+			'description' => 'Show a group of adverts or a single advert in any widget area.',
+		);
+		parent::__construct('adrotate_widgets', 'AdRotate', $widget_ops);
 	}
 
 	/*-------------------------------------------------------------
 	 Purpose:   Display the widget
 	-------------------------------------------------------------*/
-	function widget($args, $instance) {
+	public function widget($args, $instance) {
 		global $adrotate_config, $blog_id;
 
 		extract($args);
@@ -77,7 +77,7 @@ class adrotate_widgets extends WP_Widget {
 	/*-------------------------------------------------------------
 	 Purpose:   Save the widget options per instance
 	-------------------------------------------------------------*/
-	function update($new_instance, $old_instance) {
+	public function update($new_instance, $old_instance) {
 		$new_instance['title'] = strip_tags($new_instance['title']);
 		$new_instance['description'] = strip_tags($new_instance['description']);
 		$new_instance['type'] = strip_tags($new_instance['type']);
@@ -99,7 +99,7 @@ class adrotate_widgets extends WP_Widget {
 	/*-------------------------------------------------------------
 	 Purpose:   Display the widget options for admins
 	-------------------------------------------------------------*/
-	function form($instance) {
+	public function form($instance) {
 		global $blog_id;
 
 		$defaults = array();
@@ -142,6 +142,5 @@ class adrotate_widgets extends WP_Widget {
 		<input id="<?php echo $this->get_field_id('siteid'); ?>" name="<?php echo $this->get_field_name('siteid'); ?>" type="hidden" value="<?php echo $blog_id; ?>" />
 <?php
 	}
-
 }
 ?>

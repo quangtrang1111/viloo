@@ -9,7 +9,12 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('Statistics', 'adrotate'); ?></h3></td>
+
+<form name="settings" id="post" method="post" action="admin.php?page=adrotate-settings&tab=stats">
+<?php wp_nonce_field('adrotate_settings','adrotate_nonce_settings'); ?>
+<input type="hidden" name="adrotate_settings_tab" value="<?php echo $active_tab; ?>" />
+
+<h2><?php _e('Statistics', 'adrotate'); ?></h2>
 <span class="description"><?php _e('Track statistics for your adverts.', 'adrotate'); ?> <?php _e('Some options are only available in AdRotate Pro!', 'adrotate'); ?></span>
 <table class="form-table">
 	<tr>
@@ -22,11 +27,11 @@
 				<option value="0" disabled>Google Analytics (Faster)</option>
 			</select><br />
 			<span class="description">
-				<strong>Interal Tracker</strong> - <?php _e('Tracks impressions and clicks internally', 'adrotate'); ?>, <a href="https://ajdg.solutions/manuals/adrotate-manuals/adrotate-statistics/?pk_campaign=adrotatepro_settings" target="_blank"><?php _e('manual', 'adrotate'); ?></a>.<br />
+				<strong>Interal Tracker</strong> - <?php _e('Tracks impressions and clicks internally', 'adrotate'); ?>, <a href="https://ajdg.solutions/manuals/adrotate-manuals/adrotate-statistics/?utm_campaign=adrotate-manual&utm_medium=settings&utm_source=adrotate-free" target="_blank"><?php _e('manual', 'adrotate'); ?></a>.<br />
 				<strong>Supports:</strong> <em><?php _e('Click and Impression recording, Click and impression limits, impression spread for schedules, local stats display. Javascript/HTML5/Flash adverts will only track impressions.', 'adrotate'); ?></em><br /><br />
-				<strong>Piwik Analytics (<?php _e('In AdRotate Pro!', 'adrotate'); ?>)</strong> - <?php _e('Requires Piwik Analytics tracker installed in your sites footer! Uses data attributes', 'adrotate'); ?>, <a href="https://ajdg.solutions/manuals/adrotate-manuals/piwik-analytics/?pk_campaign=adrotatepro_settings" target="_blank"><?php _e('manual', 'adrotate'); ?></a>.<br />
+				<strong>Piwik Analytics (<?php _e('In AdRotate Pro!', 'adrotate'); ?>)</strong> - <?php _e('Requires Piwik Analytics tracker installed in your sites footer! Uses data attributes', 'adrotate'); ?>, <a href="https://ajdg.solutions/manuals/adrotate-manuals/piwik-analytics/?utm_campaign=adrotate-manual&utm_medium=settings&utm_source=adrotate-freepk_campaign=adrotatepro_settings" target="_blank"><?php _e('manual', 'adrotate'); ?></a>.<br />
 				<strong>Supports:</strong> <em><?php _e('Click and Impression recording via Cookie, stats are displayed in Actions > Contents.', 'adrotate'); ?></em><br /><br />
-				<strong>Google Analytics (<?php _e('In AdRotate Pro!', 'adrotate'); ?>)</strong> - <?php _e('Requires Google Universal Analytics tracker installed in your sites footer! uses onClick() and onload() in adverts', 'adrotate'); ?>, <a href="https://ajdg.solutions/manuals/adrotate-manuals/google-analytics/?pk_campaign=adrotatepro_settings" target="_blank"><?php _e('manual', 'adrotate'); ?></a>.<br />
+				<strong>Google Analytics (<?php _e('In AdRotate Pro!', 'adrotate'); ?>)</strong> - <?php _e('Requires Google Universal Analytics tracker installed in your sites footer! uses onClick() and onload() in adverts', 'adrotate'); ?>, <a href="https://ajdg.solutions/manuals/adrotate-manuals/google-analytics/?utm_campaign=adrotate-manual&utm_medium=settings&utm_source=adrotate-free" target="_blank"><?php _e('manual', 'adrotate'); ?></a>.<br />
 				<strong>Supports:</strong> <em><?php _e('Click and Impression recording via Cookie, stats are displayed in Events > Banner.', 'adrotate'); ?></em>
 			</span>
 		</td>
@@ -63,3 +68,8 @@
 		</td>
 	</tr>
 </table>
+
+<p class="submit">
+  	<input type="submit" name="adrotate_save_options" class="button-primary" value="<?php _e('Update Options', 'adrotate'); ?>" />
+</p>
+</form>

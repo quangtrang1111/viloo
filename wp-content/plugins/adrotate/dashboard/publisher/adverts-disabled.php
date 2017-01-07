@@ -12,7 +12,7 @@
 <form name="disabled_banners" id="post" method="post" action="admin.php?page=adrotate-ads">
 	<?php wp_nonce_field('adrotate_bulk_ads_disable','adrotate_nonce'); ?>
 	
-	<h3><?php _e('Disabled Ads', 'adrotate'); ?></h3>
+	<h3><?php _e('Disabled Adverts', 'adrotate'); ?></h3>
 	
 	<div class="tablenav">
 		<div class="alignleft actions">

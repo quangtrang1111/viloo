@@ -5,18 +5,6 @@
  * @package Awaken
  */
 
-/**
- * Tweak the redux framework.
- * Register all the theme options.
- * Registers the wpex_option function.
- * 
- * Note: Awaken Options panel will be removed from the very next theme update. 
- * This is here just to copy customizations from Awaken Options panel to Customizer.
- */
-if ( file_exists( get_template_directory() . '/inc/options/admin-config.php') ) {
-	require_once( get_template_directory() . '/inc/options/admin-config.php' );
-}
-
 if ( ! function_exists( 'awaken_setup' ) ) :
 /**
  * Sets up theme defaults and registers support for various WordPress features.
@@ -70,6 +58,8 @@ function awaken_setup() {
 	add_theme_support( 'html5', array(
 		'search-form', 'comment-form', 'comment-list', 'gallery', 'caption',
 	) );
+
+	add_editor_style( array( 'editor-style.css', awaken_fonts_url() ) );
 
 	/*
 	 * Enable support for Post Formats.
@@ -158,8 +148,8 @@ function awaken_widgets_init() {
 		'description'   => '',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<div class="widget-title-container"><h1 class="widget-title">',
-		'after_title'   => '</h1></div>',
+		'before_title'  => '<div class="widget-title-container"><h2 class="widget-title">',
+		'after_title'   => '</h2></div>',
 	) );
 	register_sidebar( array(
 		'name'          => __( 'Magazine 1', 'awaken' ),
@@ -167,8 +157,8 @@ function awaken_widgets_init() {
 		'description'   => '',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<div class="awt-container"><h1 class="awt-title">',
-		'after_title'   => '</h1></div>',
+		'before_title'  => '<div class="awt-container"><h2 class="awt-title">',
+		'after_title'   => '</h2></div>',
 	) );
 	register_sidebar( array(
 		'name'          => __( 'Magazine 2', 'awaken' ),
@@ -176,8 +166,17 @@ function awaken_widgets_init() {
 		'description'   => '',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<div class="awt-container"><h1 class="awt-title">',
-		'after_title'   => '</h1></div>',
+		'before_title'  => '<div class="awt-container"><h2 class="awt-title">',
+		'after_title'   => '</h2></div>',
+	) );
+	register_sidebar( array(
+		'name'          => __( 'Header Ad Area', 'awaken' ),
+		'id'            => 'header-ad',
+		'description'   => __( '728px x 90px Ad area. Use default text widget to put ad codes like google.', 'awaken' ),
+		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+		'after_widget'  => '</aside>',
+		'before_title'  => '<div class="awt-container"><h2 class="awt-title">',
+		'after_title'   => '</h2></div>',
 	) );
 	register_sidebar( array(
 		'name'          => __( 'Footer Left Sidebar', 'awaken' ),
@@ -185,8 +184,8 @@ function awaken_widgets_init() {
 		'description'   => '',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<h1 class="footer-widget-title">',
-		'after_title'   => '</h1>',
+		'before_title'  => '<h2 class="footer-widget-title">',
+		'after_title'   => '</h2>',
 	) );	
 	register_sidebar( array(
 		'name'          => __( 'Footer Mid Sidebar', 'awaken' ),
@@ -194,8 +193,8 @@ function awaken_widgets_init() {
 		'description'   => '',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<h1 class="footer-widget-title">',
-		'after_title'   => '</h1>',
+		'before_title'  => '<h2 class="footer-widget-title">',
+		'after_title'   => '</h2>',
 	) );	
 	register_sidebar( array(
 		'name'          => __( 'Footer Right Sidebar', 'awaken' ),
@@ -203,8 +202,8 @@ function awaken_widgets_init() {
 		'description'   => '',
 		'before_widget' => '<aside id="%1$s" class="widget %2$s">',
 		'after_widget'  => '</aside>',
-		'before_title'  => '<h1 class="footer-widget-title">',
-		'after_title'   => '</h1>',
+		'before_title'  => '<h2 class="footer-widget-title">',
+		'after_title'   => '</h2>',
 	) );
 }
 add_action( 'widgets_init', 'awaken_widgets_init' );
@@ -226,12 +225,11 @@ function awaken_scripts() {
 
 	wp_enqueue_script( 'awaken-scripts', get_template_directory_uri() . '/js/scripts.js', array( 'jquery' ) );
 
-    $awaken_user_agent = strtolower($_SERVER['HTTP_USER_AGENT']);
-	if(preg_match('/(?i)msie [1-8]/',$awaken_user_agent)) {
-		wp_enqueue_script( 'html5shiv', get_template_directory_uri() . '/js/html5shiv.js', true ); 
-	}
-
-	wp_enqueue_script( 'respond', get_template_directory_uri() . '/js/respond.min.js' );
+    wp_enqueue_script( 'respond', get_template_directory_uri().'/js/respond.min.js' );
+    wp_script_add_data( 'respond', 'conditional', 'lt IE 9' );
+ 
+    wp_enqueue_script( 'html5shiv',get_template_directory_uri().'/js/html5shiv.js');
+    wp_script_add_data( 'html5shiv', 'conditional', 'lt IE 9' );
 
 	wp_enqueue_script( 'awaken-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20130115', true );
 
@@ -337,13 +335,6 @@ function awaken_flex_scripts() {
 
 }
 add_action( 'wp_enqueue_scripts', 'awaken_flex_scripts' );
-
-function awaken_add_editor_styles() {
-	$font_url = str_replace( ',', '%2C', '//fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,400italic|Roboto+Condensed:400italic,400,700' );
-    add_editor_style( $font_url );
-    add_editor_style( 'editor-style.css' );
-}
-add_action( 'after_setup_theme', 'awaken_add_editor_styles' );
 
 /**
  * Implement the Custom Header feature.

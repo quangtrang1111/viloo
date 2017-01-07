@@ -1,7 +1,7 @@
 <?php
 /* ------------------------------------------------------------------------------------
 *  COPYRIGHT AND TRADEMARK NOTICE
-*  Copyright 2008-2015 Arnan de Gans. All Rights Reserved.
+*  Copyright 2008-2016 Arnan de Gans. All Rights Reserved.
 *  ADROTATE is a trademark of Arnan de Gans.
 
 *  COPYRIGHT NOTICES AND ALL THE COMMENTS SHOULD REMAIN INTACT.
@@ -9,26 +9,36 @@
 *  liability that might arise from it's use.
 ------------------------------------------------------------------------------------ */
 ?>
-<h3><?php _e('Geo Targeting - Available in AdRotate Pro', 'adrotate'); ?></h3>
+
+<form name="settings" id="post" method="post" action="admin.php?page=adrotate-settings&tab=geo">
+<?php wp_nonce_field('adrotate_settings','adrotate_nonce_settings'); ?>
+<input type="hidden" name="adrotate_settings_tab" value="<?php echo $active_tab; ?>" />
+
+<h2><?php _e('Geo Targeting - Available in AdRotate Pro', 'adrotate'); ?></h2>
 <span class="description"><?php _e('Target certain areas in the world for better advertising oppurtunities.', 'adrotate'); ?></span>
 <table class="form-table">
 	<tr>
 		<th valign="top"><?php _e('Which Geo Service', 'adrotate'); ?></th>
 		<td>
 			<select name="adrotate_enable_geo_disabled">
-				<option value="0" disabled><?php _e('Disabled', 'adrotate'); ?></option>
-				<option value="0" disabled>AdRotate Geo</option>
-				<option value="0" disabled>MaxMind City (Recommended)</option>
-				<option value="0" disabled>MaxMind Country</option>
-				<option value="0" disabled>Telize</option>
+				<option value="0" disabled="1"><?php _e('Disabled', 'adrotate'); ?></option>
+				<option value="0" disabled="1">AdRotate Geo</option>
+				<option value="0" disabled="1">MaxMind City (Recommended)</option>
+				<option value="0" disabled="1">MaxMind Country</option>
+				<option value="0" disabled="1">CloudFlare (<?php _e('Experimental', 'adrotate'); ?>)</option>
 			</select><br />
 			<span class="description">
-				<strong>MaxMind</strong> - <a href="https://www.maxmind.com/en/geoip2-precision-services?rId=ajdgnet" target="_blank">GeoIP2 Precision</a> - <?php _e('The most complete and accurate geo targeting you can get for only $20 USD per 50000 lookups.', 'adrotate'); ?> <a href="https://www.maxmind.com/en/geoip2-precision-city?rId=ajdgnet" target="_blank"><?php _e('Buy now', 'adrotate'); ?>.</a><br />
-				<em><strong>Supports:</strong> Countries, States, State ISO codes, Cities and DMA codes.</em><br /><br />					
-				<strong>AdRotate Geo</strong> - <?php _e('50000 free lookups every day, uses GeoLite2 databases from MaxMind!', 'adrotate'); ?><br />
-				<em><strong>Supports:</strong> Countries, Cities, DMA codes, States and State ISO codes.</em><br /><br />
-				<strong>Telize</strong> - <?php _e('Free service, uses GeoLite2 databases from MaxMind!', 'adrotate'); ?><br />
-				<em><strong>Supports:</strong> Countries, Cities and DMA codes.</em>
+				<p><strong>AdRotate Geo</strong> - <?php _e('30000 free lookups every day, uses GeoLite2 databases from MaxMind!', 'adrotate'); ?><br />
+				<em><strong><?php _e('Supports:', 'adrotate'); ?></strong> ipv4/ipv6, Countries, Cities, DMA codes, States and State ISO (3166-2) codes.</em><br />
+				<em><strong><?php _e('Scalability:', 'adrotate'); ?></strong> <?php _e('Suitable for small to medium websites.', 'adrotate'); ?></em><br /><br />
+
+				<strong>MaxMind</strong> - <a href="https://www.maxmind.com/en/geoip2-precision-services?rId=ajdgnet" target="_blank">GeoIP2 Precision</a> - <?php _e('The most accurate geo targeting you can get for only $20 USD per 50000 lookups.', 'adrotate'); ?> <a href="https://www.maxmind.com/en/geoip2-precision-city?rId=ajdgnet" target="_blank"><?php _e('Buy now', 'adrotate'); ?>.</a><br />
+				<em><strong><?php _e('Supports:', 'adrotate'); ?></strong> ipv4/ipv6, Countries, States, State ISO (3166-2) codes, Cities and DMA codes.</em><br />
+				<em><strong><?php _e('Scalability:', 'adrotate'); ?></strong> <?php _e('Suitable for any size website as long as you have lookups.', 'adrotate'); ?></em><br /><br />
+				
+				<strong>CloudFlare</strong> - <a href="https://support.cloudflare.com/hc/en-us/articles/200168236-What-does-CloudFlare-IP-Geolocation-do-" target="_blank">IP Geolocation</a> - <?php _e('Basic geolocation included in every CloudFlare account.', 'adrotate'); ?><br />
+				<em><strong><?php _e('Supports:', 'adrotate'); ?></strong> ipv4/ipv6, Countries.</em><br />
+				<em><strong><?php _e('Scalability:', 'adrotate'); ?></strong> <?php _e('Suitable for any size website.', 'adrotate'); ?></em><br /><br />
 			</span>
 		</td>
 	</tr>

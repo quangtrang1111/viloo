@@ -10,7 +10,10 @@ class mo_openid_login_wid extends WP_Widget {
 		parent::__construct(
 	 		'mo_openid_login_wid',
 			'miniOrange Social Login Widget',
-			array( 'description' => __( 'Login using Social Apps like Google, Facebook, LinkedIn, Microsoft, Instagram.', 'flw' ), )
+			array( 
+				'description' => __( 'Login using Social Apps like Google, Facebook, LinkedIn, Microsoft, Instagram.', 'flw' ), 
+				'customize_selective_refresh' => true,
+			)
 		);
 	 }
 
@@ -18,11 +21,7 @@ class mo_openid_login_wid extends WP_Widget {
 	public function widget( $args, $instance ) {
 		extract( $args );
 
-		//$wid_title = apply_filters( 'widget_title', $instance['wid_title'] );
-
 		echo $args['before_widget'];
-		//if ( ! empty( $wid_title ) )
-		//	echo $args['before_title'] . $wid_title . $args['after_title'];
 			$this->openidloginForm();
 
 		echo $args['after_widget'];
@@ -34,485 +33,509 @@ class mo_openid_login_wid extends WP_Widget {
 		return $instance;
 	}
 
-
-    public function openidloginForm(){
+	
+	public function openidloginForm(){
 		global $post;
-				$this->error_message();
-				$selected_theme = get_option('mo_openid_login_theme');
-				$appsConfigured = get_option('mo_openid_google_enable') | get_option('mo_openid_salesforce_enable') | get_option('mo_openid_facebook_enable') | get_option('mo_openid_linkedin_enable') | get_option('mo_openid_instagram_enable') | get_option('mo_openid_amazon_enable') | get_option('mo_openid_windowslive_enable') | get_option('mo_openid_twitter_enable') | get_option('mo_openid_vkontakte_enable');
-				$spacebetweenicons = get_option('mo_login_icon_space');
-				$customWidth = get_option('mo_login_icon_custom_width');
-				$customHeight = get_option('mo_login_icon_custom_height');
-				$customSize = get_option('mo_login_icon_custom_size');
-				$customBackground = get_option('mo_login_icon_custom_color');
-				$customTheme = get_option('mo_openid_login_custom_theme');
-				$customTextofTitle = get_option('mo_openid_login_button_customize_text');
-				if( ! is_user_logged_in() ) {
+		//$this->error_message();
+		$selected_theme = get_option('mo_openid_login_theme');
+		$appsConfigured = get_option('mo_openid_google_enable') | get_option('mo_openid_salesforce_enable') | get_option('mo_openid_facebook_enable') | get_option('mo_openid_linkedin_enable') | get_option('mo_openid_instagram_enable') | get_option('mo_openid_amazon_enable') | get_option('mo_openid_windowslive_enable') | get_option('mo_openid_twitter_enable') | get_option('mo_openid_vkontakte_enable');
+		$spacebetweenicons = get_option('mo_login_icon_space');
+		$customWidth = get_option('mo_login_icon_custom_width');
+		$customHeight = get_option('mo_login_icon_custom_height');
+		$customSize = get_option('mo_login_icon_custom_size');
+		$customBackground = get_option('mo_login_icon_custom_color');
+		$customTheme = get_option('mo_openid_login_custom_theme');
+		$customTextofTitle = get_option('mo_openid_login_button_customize_text');
+		$customBoundary = get_option('mo_login_icon_custom_boundary');
+		$customLogoutName = get_option('mo_openid_login_widget_customize_logout_name_text');
+		$customLogoutLink = get_option('mo_openid_login_widget_customize_logout_text');
+		
+		if( ! is_user_logged_in() ) {
 
-					if( $appsConfigured ) {
-						$this->mo_openid_load_login_script();
-					?>
+			if( $appsConfigured ) {
+				$this->mo_openid_load_login_script();
+			?>
+			
+				<a href="http://miniorange.com/cloud-identity-broker-service" style="display:none;"></a>
+				<a href="http://miniorange.com/strong_auth" style="display:none;"></a>
+				<a href="http://miniorange.com/single-sign-on-sso" style="display:none;"></a>
+				<a href="http://miniorange.com/fraud" style="display:none;"></a>
+			
+				 <div class="mo-openid-app-icons">
+
+				 <p><?php   echo get_option('mo_openid_login_widget_customize_text'); ?>
+				</p>
+			<?php
+				if($customTheme == 'default'){
+				if( get_option('mo_openid_facebook_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a onClick="moOpenIdLogin('facebook');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-facebook  btn-custom-size login-button"  > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-facebook"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Facebook</a>
+				<?php }
+				else{ ?>
+
+					<a title="<?php echo $customTextofTitle ?> Facebook" onClick="moOpenIdLogin('facebook');"><img alt='Facebook' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/facebook.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
+
+				<?php }
+
+				}
+				if( get_option('mo_openid_google_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?>
 					
-						<a href="http://miniorange.com/single-sign-on-sso" hidden></a>
+				<a  onClick="moOpenIdLogin('google');" style='width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;' class='btn btn-block btn-social btn-google btn-custom-size login-button' > <i style='padding-top:<?php echo $customHeight-35 ?>px !important' class='fa fa-google-plus'></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Google</a>
+				<?php }
+				else{ ?>
+				<a onClick="moOpenIdLogin('google');"  title="<?php echo $customTextofTitle ?> Google" ><img alt='Google' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/google.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
+				<?php
+				}
+				}
+
+				if( get_option('mo_openid_vkontakte_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?>
 					
-						 <div class="mo-openid-app-icons">
+				<a  onClick="moOpenIdLogin('vkontakte');" style='width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;' class='btn btn-block btn-social btn-vk btn-custom-size login-button' > <i style='padding-top:<?php echo $customHeight-35 ?>px !important' class='fa fa-vk'></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Vkontakte</a>
+				<?php }
+				else{ ?>
+				<a onClick="moOpenIdLogin('vkontakte');"  title="<?php echo $customTextofTitle ?> Vkontakte" ><img alt='Vkontakte' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/vk.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
+				<?php
+				}
+				}
 
-						 <p><?php   echo get_option('mo_openid_login_widget_customize_text'); ?>
-						</p>
-					<?php
-						if($customTheme == 'default'){
-						if( get_option('mo_openid_facebook_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('facebook');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-facebook  btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-facebook"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Facebook</a>
+				
+				if( get_option('mo_openid_twitter_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('twitter');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-twitter btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-twitter"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Twitter</a>
+				<?php }
+				else{ ?>
+
+
+				<a title="<?php echo $customTextofTitle ?> Twitter" onClick="moOpenIdLogin('twitter');"><img alt='Twitter' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/twitter.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
+				<?php }
+				}
+				
+			if( get_option('mo_openid_linkedin_enable') ) {
+							if($selected_theme == 'longbutton'){ ?>
+					<a  onClick="moOpenIdLogin('linkedin');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-linkedin"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> LinkedIn</a>
+				<?php }
+				else{ ?>
+					<a title="<?php echo $customTextofTitle ?> LinkedIn" onClick="moOpenIdLogin('linkedin');"><img alt='LinkedIn' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/linkedin.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
 						<?php }
-						else{ ?>
+				}if( get_option('mo_openid_instagram_enable') ) {
+					if($selected_theme == 'longbutton'){	?>
+				 <a  onClick="moOpenIdLogin('instagram');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-instagram btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-instagram"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Instagram</a>
+				<?php }
+				else{ ?>
 
-							<a title="<?php echo $customTextofTitle ?> Facebook" onClick="moOpenIdLogin('facebook');"><img alt='Facebook' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/facebook.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
 
+				<a title="<?php echo $customTextofTitle ?> Instagram" onClick="moOpenIdLogin('instagram');"><img alt='Instagram' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/instagram.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
+				<?php }
+				}if( get_option('mo_openid_amazon_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('amazon');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-soundcloud btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-amazon"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Amazon</a>
+				<?php }
+				else{ ?>
+
+				<a title="<?php echo $customTextofTitle ?> Amazon" onClick="moOpenIdLogin('amazon');"><img alt='Amazon' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/amazon.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
+				<?php }
+				}if( get_option('mo_openid_salesforce_enable') ) {
+						if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('salesforce');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-vimeo btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-cloud"></i> <?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Salesforce</a>
+				<?php }
+				else{ ?>
+
+
+				<a title="<?php echo $customTextofTitle ?> Salesforce" onClick="moOpenIdLogin('salesforce');"><img alt='Salesforce' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/salesforce.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
+				<?php }
+				}if( get_option('mo_openid_windowslive_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('windowslive');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-microsoft btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-windows"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Microsoft</a>
+				<?php }
+				else{ ?>
+
+
+				<a title="<?php echo $customTextofTitle ?> Microsoft" onClick="moOpenIdLogin('windowslive');"><img alt='Windowslive' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/windowslive.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
+				<?php }
+				}
+				
+				}
+				?>
+				
+				
+				
+				<?php
+				if($customTheme == 'custom'){
+				if( get_option('mo_openid_facebook_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('facebook');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-facebook  btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-facebook"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Facebook</a>
+				<?php }
+				else{ ?>
+
+					<a  onClick="moOpenIdLogin('facebook');" title="<?php echo $customTextofTitle ?> Facebook"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;" class="fa fa-facebook custom-login-button <?php echo $selected_theme; ?>" ></i></a>
+
+				<?php }
+
+				}
+
+				if( get_option('mo_openid_google_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?>
+					
+					<a   onClick="moOpenIdLogin('google');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important; background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-customtheme btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-google-plus"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Google</a>
+				<?php }
+				else{ ?>
+				<a  onClick="moOpenIdLogin('google');" title="<?php echo $customTextofTitle ?> Google"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-google-plus custom-login-button <?php echo $selected_theme; ?>" ></i></a>
+				<?php
+				}
+				}
+
+				if( get_option('mo_openid_vkontakte_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?>
+					
+					<a   onClick="moOpenIdLogin('vkontakte');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important; background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-customtheme btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-vk"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Vkontakte</a>
+				<?php }
+				else{ ?>
+				<a  onClick="moOpenIdLogin('vkontakte');" title="<?php echo $customTextofTitle ?> Vkontakte"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-vk custom-login-button <?php echo $selected_theme; ?>" ></i></a>
+				<?php
+				}
+				}
+
+				if( get_option('mo_openid_twitter_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?>
+					
+					<a   onClick="moOpenIdLogin('twitter');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important; background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-customtheme btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-twitter"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Twitter</a>
+				<?php }
+				else{ ?>
+				<a  onClick="moOpenIdLogin('twitter');" title="<?php echo $customTextofTitle ?> Twitter"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-twitter custom-login-button <?php echo $selected_theme; ?>" ></i></a>
+				<?php
+				}
+				}
+			if( get_option('mo_openid_linkedin_enable') ) {
+							if($selected_theme == 'longbutton'){ ?>
+					<a  onClick="moOpenIdLogin('linkedin');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-linkedin"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> LinkedIn</a>
+				<?php }
+				else{ ?>
+					<a  onClick="moOpenIdLogin('linkedin');" title="<?php echo $customTextofTitle ?> LinkedIn"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-linkedin custom-login-button <?php echo $selected_theme; ?>" ></i></a>
 						<?php }
-
-						}
-						if( get_option('mo_openid_google_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?>
-							
-						<a  onClick="moOpenIdLogin('google');" style='width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important' class='btn btn-block btn-social btn-google btn-custom-size login-button' > <i style='padding-top:<?php echo $customHeight-35 ?>px !important' class='fa fa-google-plus'></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Google</a>
-						<?php }
-						else{ ?>
-						<a onClick="moOpenIdLogin('google');"  title="<?php echo $customTextofTitle ?> Google" ><img alt='Google' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/google.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
-						<?php
-						}
-						}
-
-						if( get_option('mo_openid_vkontakte_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?>
-							
-						<a  onClick="moOpenIdLogin('vkontakte');" style='width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important' class='btn btn-block btn-social btn-vk btn-custom-size login-button' > <i style='padding-top:<?php echo $customHeight-35 ?>px !important' class='fa fa-vk'></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Vkontakte</a>
-						<?php }
-						else{ ?>
-						<a onClick="moOpenIdLogin('vkontakte');"  title="<?php echo $customTextofTitle ?> Vkontakte" ><img alt='Vkontakte' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/vk.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
-						<?php
-						}
-						}
-
-						
-						if( get_option('mo_openid_twitter_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('twitter');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-twitter btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-twitter"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Twitter</a>
-						<?php }
-						else{ ?>
+				}if( get_option('mo_openid_instagram_enable') ) {
+					if($selected_theme == 'longbutton'){	?>
+				 <a  onClick="moOpenIdLogin('instagram');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-instagram btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-instagram"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Instagram</a>
+				<?php }
+				else{ ?>
 
 
-						<a title="<?php echo $customTextofTitle ?> Twitter" onClick="moOpenIdLogin('twitter');"><img alt='Twitter' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/twitter.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
-						<?php }
-						}
-						
-					if( get_option('mo_openid_linkedin_enable') ) {
-									if($selected_theme == 'longbutton'){ ?>
-							<a  onClick="moOpenIdLogin('linkedin');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-linkedin"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> LinkedIn</a>
-						<?php }
-						else{ ?>
-							<a title="<?php echo $customTextofTitle ?> LinkedIn" onClick="moOpenIdLogin('linkedin');"><img alt='LinkedIn' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important" src="<?php echo plugins_url( 'includes/images/icons/linkedin.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
-								<?php }
-						}if( get_option('mo_openid_instagram_enable') ) {
-							if($selected_theme == 'longbutton'){	?>
-						 <a  onClick="moOpenIdLogin('instagram');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-instagram btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-instagram"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Instagram</a>
-						<?php }
-						else{ ?>
+				<a  onClick="moOpenIdLogin('instagram');" title="<?php echo $customTextofTitle ?> Instagram"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"   class="fa fa-instagram custom-login-button <?php echo $selected_theme; ?>"></i></a>
+				<?php }
+				}if( get_option('mo_openid_amazon_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('amazon');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" ><i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-amazon"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Amazon</a>
+				<?php }
+				else{ ?>
+
+				<a  onClick="moOpenIdLogin('amazon');" title="<?php echo $customTextofTitle ?> Amazon"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"   class="fa fa-amazon custom-login-button <?php echo $selected_theme; ?>"></i></a>
+				<?php }
+				}if( get_option('mo_openid_salesforce_enable') ) {
+						if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('salesforce');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" ><i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-cloud"></i> <?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Salesforce</a>
+				<?php }
+				else{ ?>
 
 
-						<a title="<?php echo $customTextofTitle ?> Instagram" onClick="moOpenIdLogin('instagram');"><img alt='Instagram' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/instagram.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
-						<?php }
-						}if( get_option('mo_openid_amazon_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('amazon');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-soundcloud btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-amazon"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Amazon</a>
-						<?php }
-						else{ ?>
-
-						<a title="<?php echo $customTextofTitle ?> Amazon" onClick="moOpenIdLogin('amazon');"><img alt='Amazon' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/amazon.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
-						<?php }
-						}if( get_option('mo_openid_salesforce_enable') ) {
-								if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('salesforce');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-vimeo btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-cloud"></i> <?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Salesforce</a>
-						<?php }
-						else{ ?>
+				<a  onClick="moOpenIdLogin('salesforce');" title="<?php echo $customTextofTitle ?> Salesforce"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px " class="fa fa-cloud custom-login-button <?php echo $selected_theme; ?>" ></i></a>
+				<?php }
+				}if( get_option('mo_openid_windowslive_enable') ) {
+					if($selected_theme == 'longbutton'){
+				?> <a  onClick="moOpenIdLogin('windowslive');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;border-radius:<?php echo $customBoundary ?>px !important;" class="btn btn-block btn-social btn-microsoft btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-windows"></i><?php
+							echo get_option('mo_openid_login_button_customize_text'); 	?> Microsoft</a>
+				<?php }
+				else{ ?>
 
 
-						<a title="<?php echo $customTextofTitle ?> Salesforce" onClick="moOpenIdLogin('salesforce');"><img alt='Salesforce' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/salesforce.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button" ></a>
-						<?php }
-						}if( get_option('mo_openid_windowslive_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('windowslive');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important" class="btn btn-block btn-social btn-microsoft btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-windows"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Microsoft</a>
-						<?php }
-						else{ ?>
-
-
-						<a title="<?php echo $customTextofTitle ?> Microsoft" onClick="moOpenIdLogin('windowslive');"><img alt='Windowslive' style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important"  src="<?php echo plugins_url( 'includes/images/icons/windowslive.png', __FILE__ )?>" class="<?php echo $selected_theme; ?> login-button"></a>
-						<?php }
-						}
-						
-						}
-						?>
-						
-						
-						
-						<?php
-						if($customTheme == 'custom'){
-						if( get_option('mo_openid_facebook_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('facebook');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-facebook  btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-facebook"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Facebook</a>
-						<?php }
-						else{ ?>
-
-							<a  onClick="moOpenIdLogin('facebook');" title="<?php echo $customTextofTitle ?> Facebook"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;" class="fa fa-facebook custom-login-button <?php echo $selected_theme; ?>" ></i></a>
-
-						<?php }
-
-						}
-
-						if( get_option('mo_openid_google_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?>
-							
-							<a   onClick="moOpenIdLogin('google');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important; background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-customtheme btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-google-plus"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Google</a>
-						<?php }
-						else{ ?>
-						<a  onClick="moOpenIdLogin('google');" title="<?php echo $customTextofTitle ?> Google"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-google-plus custom-login-button <?php echo $selected_theme; ?>" ></i></a>
-						<?php
-						}
-						}
-
-						if( get_option('mo_openid_vkontakte_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?>
-							
-							<a   onClick="moOpenIdLogin('vkontakte');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important; background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-customtheme btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-vk"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Vkontakte</a>
-						<?php }
-						else{ ?>
-						<a  onClick="moOpenIdLogin('vkontakte');" title="<?php echo $customTextofTitle ?> Vkontakte"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-vk custom-login-button <?php echo $selected_theme; ?>" ></i></a>
-						<?php
-						}
-						}
-
-						if( get_option('mo_openid_twitter_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?>
-							
-							<a   onClick="moOpenIdLogin('twitter');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important; background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-customtheme btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-twitter"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Twitter</a>
-						<?php }
-						else{ ?>
-						<a  onClick="moOpenIdLogin('twitter');" title="<?php echo $customTextofTitle ?> Twitter"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-twitter custom-login-button <?php echo $selected_theme; ?>" ></i></a>
-						<?php
-						}
-						}
-					if( get_option('mo_openid_linkedin_enable') ) {
-									if($selected_theme == 'longbutton'){ ?>
-							<a  onClick="moOpenIdLogin('linkedin');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-linkedin"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> LinkedIn</a>
-						<?php }
-						else{ ?>
-							<a  onClick="moOpenIdLogin('linkedin');" title="<?php echo $customTextofTitle ?> LinkedIn"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"  class="fa fa-linkedin custom-login-button <?php echo $selected_theme; ?>" ></i></a>
-								<?php }
-						}if( get_option('mo_openid_instagram_enable') ) {
-							if($selected_theme == 'longbutton'){	?>
-						 <a  onClick="moOpenIdLogin('instagram');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-instagram btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-instagram"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Instagram</a>
-						<?php }
-						else{ ?>
-
-
-						<a  onClick="moOpenIdLogin('instagram');" title="<?php echo $customTextofTitle ?> Instagram"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"   class="fa fa-instagram custom-login-button <?php echo $selected_theme; ?>"></i></a>
-						<?php }
-						}if( get_option('mo_openid_amazon_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('amazon');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important;" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" ><i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-amazon"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Amazon</a>
-						<?php }
-						else{ ?>
-
-						<a  onClick="moOpenIdLogin('amazon');" title="<?php echo $customTextofTitle ?> Amazon"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"   class="fa fa-amazon custom-login-button <?php echo $selected_theme; ?>"></i></a>
-						<?php }
-						}if( get_option('mo_openid_salesforce_enable') ) {
-								if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('salesforce');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-linkedin btn-custom-size login-button" ><i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-cloud"></i> <?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Salesforce</a>
-						<?php }
-						else{ ?>
-
-
-						<a  onClick="moOpenIdLogin('salesforce');" title="<?php echo $customTextofTitle ?> Salesforce"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px " class="fa fa-cloud custom-login-button <?php echo $selected_theme; ?>" ></i></a>
-						<?php }
-						}if( get_option('mo_openid_windowslive_enable') ) {
-							if($selected_theme == 'longbutton'){
-						?> <a  onClick="moOpenIdLogin('windowslive');" style="width:<?php echo $customWidth ?>px !important;padding-top:<?php echo $customHeight-29 ?>px !important;padding-bottom:<?php echo $customHeight-29 ?>px !important;margin-bottom:<?php echo $spacebetweenicons-5 ?>px !important;background:<?php echo "#".$customBackground?> !important" class="btn btn-block btn-social btn-microsoft btn-custom-size login-button" > <i style="padding-top:<?php echo $customHeight-35 ?>px !important" class="fa fa-windows"></i><?php
-									echo get_option('mo_openid_login_button_customize_text'); 	?> Microsoft</a>
-						<?php }
-						else{ ?>
-
-
-						<a  onClick="moOpenIdLogin('windowslive');" title="<?php echo $customTextofTitle ?> Microsoft"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"   class=" fa fa-windows custom-login-button <?php echo $selected_theme; ?>"></i></a>
-						<?php }
-						}
-						
-						
-						}
-						?>
-						<br>
-						</div> <br>
-						<?php
-
-
-					} else {
-						?>
-						<div>No apps configured. Please contact your administrator.</div>
-					<?php
-					}
-				}else {
-					global $current_user;
-			     	get_currentuserinfo();
-					$link_with_username = __('Howdy, ', 'flw') . $current_user->display_name;
-					?>
-					<div id="logged_in_user" class="mo_openid_login_wid">
-						<li><?php echo $link_with_username;?> | <a href="<?php echo wp_logout_url( site_url() ); ?>" title="<?php _e('Logout','flw');?>"><?php _e('Logout','flw');?></a></li>
-					</div>
-					<?php
+				<a  onClick="moOpenIdLogin('windowslive');" title="<?php echo $customTextofTitle ?> Microsoft"><i style="width:<?php echo $customSize?>px !important;height:<?php echo $customSize?>px !important;margin-left:<?php echo $spacebetweenicons-4?>px !important;background:<?php echo "#".$customBackground?> !important;font-size:<?php echo $customSize-16?>px !important;"   class=" fa fa-windows custom-login-button <?php echo $selected_theme; ?>"></i></a>
+				<?php }
 				}
 				
 				
+				}
+				?>
+				<br>
+				</div> <br>
+				<?php
+
+
+			} else {
+				?>
+				<div>No apps configured. Please contact your administrator.</div>
+			<?php
+			}
+		}else {
+			global $current_user;
+			$current_user = wp_get_current_user();
+			$customLogoutName = str_replace('##username##', $current_user->display_name, $customLogoutName);
+			$link_with_username = $customLogoutName;
+			if (empty($customLogoutName)  || empty($customLogoutLink)) {
+			?>
+			<div id="logged_in_user" class="mo_openid_login_wid">
+				<li><?php echo $link_with_username;?> <a href="<?php echo wp_logout_url( site_url() ); ?>" title="<?php _e('Logout','flw');?>"><?php _e($customLogoutLink,'flw');?></a></li>
+			</div>
+			<?php
+				
+			}
+			else {
+			?>
+			<div id="logged_in_user" class="mo_openid_login_wid">
+				<li><?php echo $link_with_username;?> <a href="<?php echo wp_logout_url( site_url() ); ?>" title="<?php _e('Logout','flw');?>"><?php _e($customLogoutLink,'flw');?></a></li>
+			</div>
+			<?php
+			}		
+		}
 	}
 
 	
 	public function openidloginFormShortCode( $atts ){
 		global $post;
-				$html = '';
-				$this->error_message();
-				$selected_theme = isset( $atts['shape'] )? $atts['shape'] : get_option('mo_openid_login_theme');
-				$appsConfigured = get_option('mo_openid_google_enable') | get_option('mo_openid_salesforce_enable') | get_option('mo_openid_facebook_enable') | get_option('mo_openid_linkedin_enable') | get_option('mo_openid_instagram_enable') | get_option('mo_openid_amazon_enable') | get_option('mo_openid_windowslive_enable') |get_option('mo_openid_twitter_enable') | get_option('mo_openid_vkontakte_enable');
-				$spacebetweenicons = isset( $atts['space'] )? $atts['space'] : get_option('mo_login_icon_space');
-				$customWidth = isset( $atts['width'] )? $atts['width'] : get_option('mo_login_icon_custom_width');
-				$customHeight = isset( $atts['height'] )? $atts['height'] : get_option('mo_login_icon_custom_height');
-				$customSize = isset( $atts['size'] )? $atts['size'] : get_option('mo_login_icon_custom_size');
-				$customBackground = isset( $atts['background'] )? $atts['background'] : get_option('mo_login_icon_custom_color');
-				$customTheme = isset( $atts['theme'] )? $atts['theme'] : get_option('mo_openid_login_custom_theme');
-				$customText = get_option('mo_openid_login_widget_customize_text');
-				$buttonText = get_option('mo_openid_login_button_customize_text');
-				$customTextofTitle = get_option('mo_openid_login_button_customize_text');
-				$logoutUrl = wp_logout_url( site_url() );
+		$html = '';
+		//$this->error_message();
+		$selected_theme = isset( $atts['shape'] )? $atts['shape'] : get_option('mo_openid_login_theme');
+		$appsConfigured = get_option('mo_openid_google_enable') | get_option('mo_openid_salesforce_enable') | get_option('mo_openid_facebook_enable') | get_option('mo_openid_linkedin_enable') | get_option('mo_openid_instagram_enable') | get_option('mo_openid_amazon_enable') | get_option('mo_openid_windowslive_enable') |get_option('mo_openid_twitter_enable') | get_option('mo_openid_vkontakte_enable');
+		$spacebetweenicons = isset( $atts['space'] )? $atts['space'] : get_option('mo_login_icon_space');
+		$customWidth = isset( $atts['width'] )? $atts['width'] : get_option('mo_login_icon_custom_width');
+		$customHeight = isset( $atts['height'] )? $atts['height'] : get_option('mo_login_icon_custom_height');
+		$customSize = isset( $atts['size'] )? $atts['size'] : get_option('mo_login_icon_custom_size');
+		$customBackground = isset( $atts['background'] )? $atts['background'] : get_option('mo_login_icon_custom_color');
+		$customTheme = isset( $atts['theme'] )? $atts['theme'] : get_option('mo_openid_login_custom_theme');
+		$customText = get_option('mo_openid_login_widget_customize_text');
+		$buttonText = get_option('mo_openid_login_button_customize_text');
+		$customTextofTitle = get_option('mo_openid_login_button_customize_text');
+		$logoutUrl = wp_logout_url( site_url() );
+		$customBoundary = isset( $atts['edge'] )? $atts['edge'] : get_option('mo_login_icon_custom_boundary');
+		$customLogoutName = get_option('mo_openid_login_widget_customize_logout_name_text');
+		$customLogoutLink = get_option('mo_openid_login_widget_customize_logout_text');
+		
+		if($selected_theme == 'longbuttonwithtext'){
+			$selected_theme = 'longbutton';
+		}
+		if($customTheme == 'custombackground'){
+			$customTheme = 'custom';
+		}
+		
+		if( ! is_user_logged_in() ) {
+
+			if( $appsConfigured ) {
+				$this->mo_openid_load_login_script();
+			$html .= "<a href='http://miniorange.com/cloud-identity-broker-service' style='display:none;'></a>
+				<a href='http://miniorange.com/strong_auth' style='display:none;'></a>
+				<a href='http://miniorange.com/single-sign-on-sso' style='display:none;'></a>
+				<a href='http://miniorange.com/fraud' style='display:none;'></a>
+			
+				 <div class='mo-openid-app-icons'>
 				
-				if($selected_theme == 'longbuttonwithtext'){
-					$selected_theme = 'longbutton';
-				}
-				if($customTheme == 'custombackground'){
-					$customTheme = 'custom';
-				}
+				 <p> $customText</p>";
 				
-				if( ! is_user_logged_in() ) {
+				if($customTheme == 'default'){
+				if( get_option('mo_openid_facebook_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-facebook btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"facebook"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-facebook'></i>" . $buttonText . " Facebook</a>"; }
+				else{ 
+						$html .= "<a title= ' ".$customTextofTitle." Facebook' onClick='moOpenIdLogin(" . '"facebook"' . ");' ><img alt='Facebook' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/facebook.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				}
 
-					if( $appsConfigured ) {
-						$this->mo_openid_load_login_script();
-					$html .= "<a href='http://miniorange.com/single-sign-on-sso' hidden></a>
-					
-						 <div class='mo-openid-app-icons'>
-						
-						 <p> $customText</p>";
-						
-						if($customTheme == 'default'){
-						if( get_option('mo_openid_facebook_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-facebook btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"facebook"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-facebook'></i>" . $buttonText . " Facebook</a>"; }
-						else{ 
-								$html .= "<a title= ' ".$customTextofTitle." Facebook' onClick='moOpenIdLogin(" . '"facebook"' . ");' ><img alt='Facebook' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/facebook.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						}
+				}
 
-						}
+				if( get_option('mo_openid_google_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary ."px !important;' class='btn btn-block btn-social btn-google btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"google"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-google-plus'></i>" . $buttonText . " Google</a>"; 
+				 }
+				else{ 
+				
+				$html .= "<a  onClick='moOpenIdLogin(" . '"google"' . ");' title= ' ".$customTextofTitle." Google'><img alt='Google' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/google.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				
+				}
+				}
 
-						if( get_option('mo_openid_google_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-google btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"google"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-google-plus'></i>" . $buttonText . " Google</a>"; 
-						 }
-						else{ 
-						
-						$html .= "<a  onClick='moOpenIdLogin(" . '"google"' . ");' title= ' ".$customTextofTitle." Google'><img alt='Google' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/google.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						
-						}
-						}
+				if( get_option('mo_openid_vkontakte_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary ."px !important;' class='btn btn-block btn-social btn-vk btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"vkontakte"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-vk'></i>" . $buttonText . " Vkontakte</a>"; 
+				 }
+				else{ 
+				
+				$html .= "<a  onClick='moOpenIdLogin(" . '"vkontakte"' . ");' title= ' ".$customTextofTitle." Vkontakte'><img alt='Vkontakte' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/vk.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				
+				}
+				}
 
-						if( get_option('mo_openid_vkontakte_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-vk btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"vkontakte"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-vk'></i>" . $buttonText . " Vkontakte</a>"; 
-						 }
-						else{ 
-						
-						$html .= "<a  onClick='moOpenIdLogin(" . '"vkontakte"' . ");' title= ' ".$customTextofTitle." Vkontakte'><img alt='Vkontakte' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/vk.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						
-						}
-						}
+				if( get_option('mo_openid_twitter_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary ."px !important;' class='btn btn-block btn-social btn-twitter btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"twitter"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-twitter'></i>" . $buttonText . " Twitter</a>"; }
+				else{ 
+						$html .= "<a title= ' ".$customTextofTitle." Twitter' onClick='moOpenIdLogin(" . '"twitter"' . ");' ><img alt='Twitter' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/twitter.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				}
 
-						if( get_option('mo_openid_twitter_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-twitter btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"twitter"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-twitter'></i>" . $buttonText . " Twitter</a>"; }
-						else{ 
-								$html .= "<a title= ' ".$customTextofTitle." Twitter' onClick='moOpenIdLogin(" . '"twitter"' . ");' ><img alt='Twitter' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/twitter.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						}
-
-						}
-					if( get_option('mo_openid_linkedin_enable') ) {
-									if($selected_theme == 'longbutton'){ 
-							 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-linkedin btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"linkedin"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-linkedin'></i>" . $buttonText . " LinkedIn</a>";
-						 }
-						else{ 
-								$html .= "<a title= ' ".$customTextofTitle." LinkedIn' onClick='moOpenIdLogin(" . '"linkedin"' . ");' ><img alt='LinkedIn' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/linkedin.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						 }
-						}if( get_option('mo_openid_instagram_enable') ) {
-							if($selected_theme == 'longbutton'){	
-						 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-instagram btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"instagram"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-instagram'></i>" . $buttonText . " Instagram</a>";
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Instagram' onClick='moOpenIdLogin(" . '"instagram"' . ");' ><img alt='Instagram' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/instagram.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						}
-						}if( get_option('mo_openid_amazon_enable') ) {
-							if($selected_theme == 'longbutton'){
-						      $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-soundcloud btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"amazon"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-amazon'></i>" . $buttonText . " Amazon</a>"; 
-						 }
-						else{
-							$html .= "<a title= ' ".$customTextofTitle." Amazon' onClick='moOpenIdLogin(" . '"amazon"' . ");' ><img alt='Amazon' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/amazon.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						}
-						}if( get_option('mo_openid_salesforce_enable') ) {
-								if($selected_theme == 'longbutton'){
-						 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-vimeo btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"salesforce"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-cloud'></i>" . $buttonText . " Salesforce</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Salesforce' onClick='moOpenIdLogin(" . '"salesforce"' . ");' ><img alt='Salesforce' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/salesforce.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						}
-						}if( get_option('mo_openid_windowslive_enable') ) {
-							if($selected_theme == 'longbutton'){
-								$html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important' class='btn btn-block btn-social btn-microsoft btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"windowslive"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-windows'></i>" . $buttonText . " Microsoft</a>";
-							}
-						else{ 
-								$html .= "<a title= ' ".$customTextofTitle." Microsoft' onClick='moOpenIdLogin(" . '"windowslive"' . ");' ><img alt='Windowslive' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/windowslive.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
-						}
-						}
-						}
-						
-						
-						
-						if($customTheme == 'custom'){
-						if( get_option('mo_openid_facebook_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a   onClick='moOpenIdLogin(" . '"facebook"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-facebook'></i> " . $buttonText . " Facebook</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Facebook' onClick='moOpenIdLogin(" . '"facebook"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-facebook custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-
-						}
-
-						if( get_option('mo_openid_google_enable') ) {
-							if($selected_theme == 'longbutton'){
-								$html .= "<a   onClick='moOpenIdLogin(" . '"google"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-google-plus'></i> " . $buttonText . " Google</a>"; 
-							}
-						else{ 
-								$html .= "<a title= ' ".$customTextofTitle." Google' onClick='moOpenIdLogin(" . '"google"' . ");' title= ' ". $customTextofTitle."  Google'><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-google-plus custom-login-button  " . $selected_theme . "' ></i></a>";
-						
-							}
-						}
-
-						if( get_option('mo_openid_vkontakte_enable') ) {
-							if($selected_theme == 'longbutton'){
-								$html .= "<a   onClick='moOpenIdLogin(" . '"vkontakte"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-vk'></i> " . $buttonText . " Vkontakte</a>"; 
-							}
-						else{ 
-								$html .= "<a title= ' ".$customTextofTitle." Vkontakte' onClick='moOpenIdLogin(" . '"vkontakte"' . ");' title= ' ". $customTextofTitle."  Vkontakte'><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-vk custom-login-button  " . $selected_theme . "' ></i></a>";
-						
-							}
-						}
-
-						if( get_option('mo_openid_twitter_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a   onClick='moOpenIdLogin(" . '"twitter"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-twitter'></i> " . $buttonText . " Twitter</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Twitter' onClick='moOpenIdLogin(" . '"twitter"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-twitter custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-
-						}
-					if( get_option('mo_openid_linkedin_enable') ) {
-									if($selected_theme == 'longbutton'){ 
-							 $html .= "<a   onClick='moOpenIdLogin(" . '"linkedin"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-linkedin'></i> " . $buttonText . " LinkedIn</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." LinkedIn' onClick='moOpenIdLogin(" . '"linkedin"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-linkedin custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-						}if( get_option('mo_openid_instagram_enable') ) {
-							if($selected_theme == 'longbutton'){
-								 $html .= "<a   onClick='moOpenIdLogin(" . '"instagram"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-instagram'></i> " . $buttonText . " Instagram</a>"; 
-						 }
-						else{
-							$html .= "<a title= ' ".$customTextofTitle." Instagram' onClick='moOpenIdLogin(" . '"instagram"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-instagram custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-						}if( get_option('mo_openid_amazon_enable') ) {
-							if($selected_theme == 'longbutton'){
-						 $html .= "<a   onClick='moOpenIdLogin(" . '"amazon"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-amazon'></i> " . $buttonText . " Amazon</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Amazon'  onClick='moOpenIdLogin(" . '"amazon"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-amazon custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-						}if( get_option('mo_openid_salesforce_enable') ) {
-								if($selected_theme == 'longbutton'){
-						  $html .= "<a   onClick='moOpenIdLogin(" . '"salesforce"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-cloud'></i> " . $buttonText . " Salesforce</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Salesforce' onClick='moOpenIdLogin(" . '"salesforce"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-cloud custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-						}if( get_option('mo_openid_windowslive_enable') ) {
-							if($selected_theme == 'longbutton'){
-						  $html .= "<a   onClick='moOpenIdLogin(" . '"windowslive"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-windows'></i> " . $buttonText . " Microsoft</a>"; 
-						 }
-						else{ 
-							$html .= "<a title= ' ".$customTextofTitle." Microsoft' onClick='moOpenIdLogin(" . '"windowslive"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-windows custom-login-button  " . $selected_theme . "' ></i></a>";
-						}
-						}
-						}
-						 $html .= '</div> <br>';
-
-
-					} else {
-						
-						$html .= '<div>No apps configured. Please contact your administrator.</div>';
-					
+				}
+			if( get_option('mo_openid_linkedin_enable') ) {
+							if($selected_theme == 'longbutton'){ 
+					 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-linkedin btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"linkedin"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-linkedin'></i>" . $buttonText . " LinkedIn</a>";
+				 }
+				else{ 
+						$html .= "<a title= ' ".$customTextofTitle." LinkedIn' onClick='moOpenIdLogin(" . '"linkedin"' . ");' ><img alt='LinkedIn' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/linkedin.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				 }
+				}if( get_option('mo_openid_instagram_enable') ) {
+					if($selected_theme == 'longbutton'){	
+				 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-instagram btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"instagram"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-instagram'></i>" . $buttonText . " Instagram</a>";
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Instagram' onClick='moOpenIdLogin(" . '"instagram"' . ");' ><img alt='Instagram' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/instagram.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				}
+				}if( get_option('mo_openid_amazon_enable') ) {
+					if($selected_theme == 'longbutton'){
+				      $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-soundcloud btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"amazon"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-amazon'></i>" . $buttonText . " Amazon</a>"; 
+				 }
+				else{
+					$html .= "<a title= ' ".$customTextofTitle." Amazon' onClick='moOpenIdLogin(" . '"amazon"' . ");' ><img alt='Amazon' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/amazon.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				}
+				}if( get_option('mo_openid_salesforce_enable') ) {
+						if($selected_theme == 'longbutton'){
+				 $html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-vimeo btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"salesforce"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-cloud'></i>" . $buttonText . " Salesforce</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Salesforce' onClick='moOpenIdLogin(" . '"salesforce"' . ");' ><img alt='Salesforce' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/salesforce.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				}
+				}if( get_option('mo_openid_windowslive_enable') ) {
+					if($selected_theme == 'longbutton'){
+						$html .= "<a  style='width: " . $customWidth . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom: " . ($spacebetweenicons-5)  . "px !important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-microsoft btn-custom-dec login-button' onClick='moOpenIdLogin(" . '"windowslive"' . ");'> <i style='padding-top:" . ($customHeight-35) . "px !important' class='fa fa-windows'></i>" . $buttonText . " Microsoft</a>";
 					}
-				}else {
-					global $current_user;
-			     	get_currentuserinfo();
-					$link_with_username = __('Howdy, ', 'flw') . $current_user->display_name;
-					$flw = __("Logout","flw");
-					
-					$html .= '<div id="logged_in_user" class="mo_openid_login_wid">	' . $link_with_username . ' | <a href=' . $logoutUrl .' title=" ' . $flw . '"> ' . $flw . '</a></div>';
-
+				else{ 
+						$html .= "<a title= ' ".$customTextofTitle." Microsoft' onClick='moOpenIdLogin(" . '"windowslive"' . ");' ><img alt='Windowslive' style='width:" . $customSize ."px !important;height: " . $customSize ."px !important;margin-left: " . ($spacebetweenicons-4) ."px !important' src='" . plugins_url( 'includes/images/icons/windowslive.png', __FILE__ ) . "' class='login-button " .$selected_theme . "' ></a>";
+				}
+				}
 				}
 				
-				return $html;
 				
+				
+				if($customTheme == 'custom'){
+				if( get_option('mo_openid_facebook_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a   onClick='moOpenIdLogin(" . '"facebook"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-facebook'></i> " . $buttonText . " Facebook</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Facebook' onClick='moOpenIdLogin(" . '"facebook"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-facebook custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+
+				}
+
+				if( get_option('mo_openid_google_enable') ) {
+					if($selected_theme == 'longbutton'){
+						$html .= "<a   onClick='moOpenIdLogin(" . '"google"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-google-plus'></i> " . $buttonText . " Google</a>"; 
+					}
+				else{ 
+						$html .= "<a title= ' ".$customTextofTitle." Google' onClick='moOpenIdLogin(" . '"google"' . ");' title= ' ". $customTextofTitle."  Google'><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-google-plus custom-login-button  " . $selected_theme . "' ></i></a>";
+				
+					}
+				}
+
+				if( get_option('mo_openid_vkontakte_enable') ) {
+					if($selected_theme == 'longbutton'){
+						$html .= "<a   onClick='moOpenIdLogin(" . '"vkontakte"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-vk'></i> " . $buttonText . " Vkontakte</a>"; 
+					}
+				else{ 
+						$html .= "<a title= ' ".$customTextofTitle." Vkontakte' onClick='moOpenIdLogin(" . '"vkontakte"' . ");' title= ' ". $customTextofTitle."  Vkontakte'><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-vk custom-login-button  " . $selected_theme . "' ></i></a>";
+				
+					}
+				}
+
+				if( get_option('mo_openid_twitter_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a   onClick='moOpenIdLogin(" . '"twitter"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-twitter'></i> " . $buttonText . " Twitter</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Twitter' onClick='moOpenIdLogin(" . '"twitter"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-twitter custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+
+				}
+			if( get_option('mo_openid_linkedin_enable') ) {
+							if($selected_theme == 'longbutton'){ 
+					 $html .= "<a   onClick='moOpenIdLogin(" . '"linkedin"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-linkedin'></i> " . $buttonText . " LinkedIn</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." LinkedIn' onClick='moOpenIdLogin(" . '"linkedin"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-linkedin custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+				}if( get_option('mo_openid_instagram_enable') ) {
+					if($selected_theme == 'longbutton'){
+						 $html .= "<a   onClick='moOpenIdLogin(" . '"instagram"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-instagram'></i> " . $buttonText . " Instagram</a>"; 
+				 }
+				else{
+					$html .= "<a title= ' ".$customTextofTitle." Instagram' onClick='moOpenIdLogin(" . '"instagram"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-instagram custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+				}if( get_option('mo_openid_amazon_enable') ) {
+					if($selected_theme == 'longbutton'){
+				 $html .= "<a   onClick='moOpenIdLogin(" . '"amazon"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-amazon'></i> " . $buttonText . " Amazon</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Amazon'  onClick='moOpenIdLogin(" . '"amazon"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-amazon custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+				}if( get_option('mo_openid_salesforce_enable') ) {
+						if($selected_theme == 'longbutton'){
+				  $html .= "<a   onClick='moOpenIdLogin(" . '"salesforce"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-cloud'></i> " . $buttonText . " Salesforce</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Salesforce' onClick='moOpenIdLogin(" . '"salesforce"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-cloud custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+				}if( get_option('mo_openid_windowslive_enable') ) {
+					if($selected_theme == 'longbutton'){
+				  $html .= "<a   onClick='moOpenIdLogin(" . '"windowslive"' . ");' style='width:" . ($customWidth) . "px !important;padding-top:" . ($customHeight-29) . "px !important;padding-bottom:" . ($customHeight-29) . "px !important;margin-bottom:" . ($spacebetweenicons-5) . "px !important; background:#" . $customBackground . "!important;border-radius: " .$customBoundary. "px !important;' class='btn btn-block btn-social btn-customtheme btn-custom-dec login-button' > <i style='padding-top:" .($customHeight-35) . "px !important' class='fa fa-windows'></i> " . $buttonText . " Microsoft</a>"; 
+				 }
+				else{ 
+					$html .= "<a title= ' ".$customTextofTitle." Microsoft' onClick='moOpenIdLogin(" . '"windowslive"' . ");' ><i style='width:" . $customSize . "px !important;height:" . $customSize . "px !important;margin-left:" . ($spacebetweenicons-4) . "px !important;background:#" . $customBackground . " !important;font-size: " . ($customSize-16) . "px !important;'  class='fa fa-windows custom-login-button  " . $selected_theme . "' ></i></a>";
+				}
+				}
+				}
+				 $html .= '</div> <br>';
+
+
+			} else {
+				
+				$html .= '<div>No apps configured. Please contact your administrator.</div>';
+			
+			}
+		}else {
+			global $current_user;
+	     	$current_user = wp_get_current_user();
+			$customLogoutName = str_replace('##username##', $current_user->display_name, $customLogoutName);
+			$flw = __($customLogoutLink,"flw");
+			if (empty($customLogoutName)  || empty($customLogoutLink)) {
+				$html .= '<div id="logged_in_user" class="mo_openid_login_wid">' . $customLogoutName . ' <a href=' . $logoutUrl .' title=" ' . $flw . '"> ' . $flw . '</a></div>';
+			}
+			else {
+				$html .= '<div id="logged_in_user" class="mo_openid_login_wid">' . $customLogoutName . ' <a href=' . $logoutUrl .' title=" ' . $flw . '"> ' . $flw . '</a></div>';
+			}
+		}
+		
+		return $html;
 	}
 	
 	private function mo_openid_load_login_script() {
-			?>
-			<script type="text/javascript">
-				function moOpenIdLogin(app_name) {
+		?>
+		<script type="text/javascript">
+			function moOpenIdLogin(app_name) {
 				<?php
 					if(isset($_SERVER['HTTPS']) && !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] != 'off'){
 						$http = "https://";
@@ -520,30 +543,30 @@ class mo_openid_login_wid extends WP_Widget {
 						$http =  "http://";
 					}
 					if ( strpos($_SERVER['REQUEST_URI'],'wp-login.php') !== FALSE){
-							$redirect_url = site_url() . '/wp-login.php?option=getMoSocialLogin&app_name=';
+						$redirect_url = site_url() . '/?option=getmosociallogin&app_name=';
 
 					}else{
-					    	$redirect_url = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
-							if(strpos($redirect_url, '?') !== false) {
-								$redirect_url .= '&option=getMoSocialLogin&app_name=';
-							} else {
-								$redirect_url .= '?option=getMoSocialLogin&app_name=';
-							}
-    				}
-    			?>
-					window.location.href = '<?php echo $redirect_url; ?>' + app_name;
-				}
-			</script>
-			<?php
+				    	$redirect_url = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+						if(strpos($redirect_url, '?') !== false) {
+							$redirect_url .= '&option=getmosociallogin&app_name=';
+						} else {
+							$redirect_url .= '?option=getmosociallogin&app_name=';
+						}
+					}
+				?>
+				window.location.href = '<?php echo $redirect_url; ?>' + app_name;
+			}
+		</script>
+		<?php
 	}
 
-	public function error_message(){
+	/*public function error_message(){
 		if(isset($_SESSION['msg']) and $_SESSION['msg']){
 			echo '<div class="'.$_SESSION['msg_class'].'">'.$_SESSION['msg'].'</div>';
 			unset($_SESSION['msg']);
 			unset($_SESSION['msg_class']);
 		}
-	}
+	}*/
 
 }
 
@@ -558,19 +581,18 @@ class mo_openid_sharing_hor_wid extends WP_Widget {
 		parent::__construct(
 	 		'mo_openid_sharing_hor_wid',
 			'miniOrange Sharing - Horizontal',
-			array( 'description' => __( 'Share using horizontal widget. Lets you share with Social Apps like Google, Facebook, LinkedIn, Pinterest, Reddit.', 'flw' ), )
+			array( 
+				'description' => __( 'Share using horizontal widget. Lets you share with Social Apps like Google, Facebook, LinkedIn, Pinterest, Reddit.', 'flw' ),
+				'customize_selective_refresh' => true,
+			)
 		);
-	 }
+	}
 
 
 	public function widget( $args, $instance ) {
 		extract( $args );
 
-		//$wid_title = apply_filters( 'widget_title', $instance['wid_title'] );
-
 		echo $args['before_widget'];
-		//if ( ! empty( $wid_title ) )
-		//	echo $args['before_title'] . $wid_title . $args['after_title'];
 			$this->show_sharing_buttons_horizontal();
 
 		echo $args['after_widget'];
@@ -606,7 +628,10 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 		parent::__construct(
 	 		'mo_openid_sharing_ver_wid',
 			'miniOrange Sharing - Vertical',
-			array( 'description' => __( 'Share using a vertical floating widget. Lets you share with Social Apps like Google, Facebook, LinkedIn, Pinterest, Reddit.', 'flw' ), )
+			array( 
+				'description' => __( 'Share using a vertical floating widget. Lets you share with Social Apps like Google, Facebook, LinkedIn, Pinterest, Reddit.', 'flw' ), 
+				'customize_selective_refresh' => true,
+			)
 		);
 	 }
 
@@ -711,9 +736,9 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
  
 
 	function mo_openid_start_session() {
-			if( !session_id() ) {
-				session_start();
-			}
+		if( !session_id() ) {
+			session_start();
+		}
 	}
 
 	function mo_openid_end_session() {
@@ -721,16 +746,9 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 			session_destroy();
 		}
 	}
-	
-	function mo_openid_widget_register_plugin_styles() {
-		/*wp_enqueue_style( 'style_login_widget', plugins_url( 'miniorange-login-openid/includes/css/mo_openid_style.css' ) );
-		wp_enqueue_style( 'mo-wp-bootstrap-social',plugins_url('includes/css/bootstrap-social.css', __FILE__), false );
-		wp_enqueue_style( 'mo-wp-bootstrap-main',plugins_url('includes/css/bootstrap.min.css', __FILE__), false );
-		wp_enqueue_style( 'mo-wp-font-awesome',plugins_url('includes/css/font-awesome.min.css', __FILE__), false );*/
-	}
 
 	function mo_openid_login_validate(){
-		if( isset( $_REQUEST['option'] ) and strpos( $_REQUEST['option'], 'getMoSocialLogin' ) !== false ) {
+		if( isset( $_REQUEST['option'] ) and strpos( $_REQUEST['option'], 'getmosociallogin' ) !== false ) {
 			$client_name = "wordpress";
 			$timestamp = round( microtime(true) * 1000 );
 			$api_key = get_option('mo_openid_admin_api_key');
@@ -760,25 +778,43 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 			exit;
 		}
 
-		if( isset( $_REQUEST['option'] ) and strpos( $_REQUEST['option'], 'moopenid' ) !== false ){			
+		if( isset( $_REQUEST['option'] ) and strpos( $_REQUEST['option'], 'moopenid' ) !== false ){
+			//Decrypt all entries
 			$decrypted_email = isset($_POST['email']) ? mo_openid_decrypt($_POST['email']): '';
 			$decrypted_user_name = isset($_POST['username']) ? mo_openid_decrypt($_POST['username']): '';
 			$decrypted_user_picture = isset($_POST['profilePic']) ? mo_openid_decrypt($_POST['profilePic']): '';
 			$decrypted_user_url = isset($_POST['profileUrl']) ? mo_openid_decrypt($_POST['profileUrl']): '';
 			$decrypted_first_name = isset($_POST['firstName']) ? mo_openid_decrypt($_POST['firstName']): '';
 			$decrypted_last_name = isset($_POST['lastName']) ? mo_openid_decrypt($_POST['lastName']): '';
-
+			
+			//Calculate user email
 			if( isset( $decrypted_email ) && strcmp($decrypted_email,'')!=0 ) {
 				$user_email = $decrypted_email;
 			} else if( isset( $decrypted_user_name )){
-				$user_email = str_replace(" ",".",$decrypted_user_name).'@social-user.com';
+				$user_email = str_replace(" ","_",$decrypted_user_name).'@social-user.com';
+			}
+			
+			//Set Display Picture
+			$user_picture = $decrypted_user_picture;
+			
+			//Check if username is equal to full name, set username as email
+			if(empty($decrypted_user_name)){
+				$email = array();
+				$email = explode('@', $decrypted_email);
+				$username = $email[0];
+			} else {
+				if(strpos($decrypted_user_name, ' ') !== FALSE){
+					$username_split = explode("@", $decrypted_user_name);
+					$username = $username_split[0];
+				} else {
+					$username = $decrypted_user_name;
+				}
 			}
 
-			$user_name = $decrypted_user_name;
-			$user_picture = $decrypted_user_picture;
-
-			if(isset($_POST['profileUrl']))
-				$user_url = $decrypted_user_url;			
+			//Set User URL
+			$user_url = $decrypted_user_url;
+			
+			//Set User Display Name
 			if(isset( $_POST['firstName'] ) && isset( $_POST['lastName'] )){
 				if(strcmp($decrypted_first_name, $decrypted_last_name)!=0)
 					$user_full_name = $decrypted_first_name.' '.$decrypted_last_name;
@@ -788,29 +824,64 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 				$last_name = $decrypted_last_name;
 			}	
 			else
-				$user_full_name = $decrypted_user_name;
-
-			//Check if username is equal to full name, set username as email
-			if(strcmp($decrypted_user_name, $user_full_name)){
-				$email_split = explode("@", $user_email);
-				$username = $email_split[0];
-			} else {
-				$username = $decrypted_user_name;
-			}
+				$user_full_name = $username;
 			
 			if( $user_email ) {
-				if( email_exists( $user_email ) ) { // user is a member
-					  $user 	= get_user_by('email', $user_email );
+				global $wpdb;
+				$user_email = sanitize_email($user_email);
+				$username = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $username);
+				$username = strtolower(str_replace(" ","",$username));
+
+				$orignal_username = ''; 
+				$orignal_email = '';
+
+				//Check for string in another language
+				if(strlen($username) != mb_strlen($username, 'utf-8') || strlen($user_email) != mb_strlen($user_email, 'utf-8')){
+					$orignal_username = $username;
+					if(strlen($user_email) != mb_strlen($user_email, 'utf-8')) {
+						$orignal_email = $user_email;
+						$server_name = array();
+						if(strlen($user_full_name) != mb_strlen($user_full_name, 'utf-8')) {
+							$server_name = explode(".", $_SERVER['SERVER_NAME']);
+							$index = count($server_name) >= 3 ? 1 : 0;
+							$username = $server_name[$index] . '_' . get_option('mo_openid_user_number');
+							$user_email = $server_name[$index] . '_' . get_option('mo_openid_user_number') . '@social-user.com';
+							update_option('mo_openid_user_number', get_option('mo_openid_user_number') + 1);
+						} else {
+							$user_full_name = preg_replace('/[\x00-\x09\x0B\x0C\x0E-\x1F\x7F]/', '', $user_full_name);
+							$username = strtolower(str_replace(" ","",$user_full_name));
+							$user_email = str_replace(" ","_",$user_full_name).'@social-user.com';
+						}
+					} else {
+						$email_explode = array();
+						$email_explode = explode("@", $user_email);
+						$username = $email_explode[0];
+					}
+				}
+
+				//Checking if email or username already exist
+				$email_user_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users where user_email = %s", $user_email));
+				$username_user_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users where user_login = %s", $username));
+				if( !isset($email_user_id) && !isset($username_user_id) && (!empty($orignal_username) || !empty($orignal_email))) {
+					$email_user_id = $wpdb->get_var($wpdb->prepare("SELECT user_id FROM $wpdb->usermeta where meta_key = 'moopenid_orignal_email' and meta_value = %s", $orignal_email));
+					$username_user_id = $wpdb->get_var($wpdb->prepare("SELECT user_id FROM $wpdb->usermeta where meta_key = 'moopenid_orignal_username' and meta_value = %s", $orignal_username));
+				}
+
+				mo_openid_start_session();
+				if( isset($email_user_id)) { // user is a member
+					  $user 	= get_user_by('id', $email_user_id );
 					  $user_id 	= $user->ID;
 					  if(get_option('moopenid_social_login_avatar') && isset($user_picture))
 							update_user_meta($user_id, 'moopenid_user_avatar', $user_picture);
+					  $_SESSION['mo_login'] = true;
 					  do_action( 'wp_login', $user->user_login, $user );
 					  wp_set_auth_cookie( $user_id, true );
-				} else if( username_exists( $username ) ) { // user is a member
-					  $user 	= get_user_by('login', $username );
+				} else if( isset($username_user_id) ) { // user is a member
+					  $user 	= get_user_by('id', $username_user_id );
 					  $user_id 	= $user->ID;
 					  if(get_option('moopenid_social_login_avatar') && isset($user_picture))
 							update_user_meta($user_id, 'moopenid_user_avatar', $user_picture);
+					  $_SESSION['mo_login'] = true;
 					  do_action( 'wp_login', $user->user_login, $user );
 					  wp_set_auth_cookie( $user_id, true );
 				} else { // this user is a guest
@@ -828,11 +899,30 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 						
 						  
 						$user_id 	= wp_insert_user( $userdata);
+						
+						if(is_wp_error( $user_id )) {
+							//print_r($user_id);
+							echo '<br/>There was an error in registration. Please contact your administrator.';
+							exit();
+						}
+						
 						$user	= get_user_by('email', $user_email );
-
+						if(get_option('mo_openid_login_role_mapping') && mo_openid_is_customer_valid()){
+							$user->set_role( get_option('mo_openid_login_role_mapping') );
+						}
+						//Add meta if username in other language
+						if(!empty($orignal_username)) {
+							update_user_meta($user_id, 'moopenid_orignal_username', $orignal_username);
+						}
+						//Add meta if email in other language
+						if(!empty($orignal_email)) {
+							update_user_meta($user_id, 'moopenid_orignal_email', $orignal_email);
+						}
 						if(get_option('moopenid_social_login_avatar') && isset($user_picture)){
 							update_user_meta($user_id, 'moopenid_user_avatar', $user_picture);
 						}
+						$_SESSION['mo_login'] = true;
+						do_action( 'user_register', $user_id);
 						do_action( 'wp_login', $user->user_login, $user );
 						wp_set_auth_cookie( $user_id, true );
 					}
@@ -932,7 +1022,18 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 			return $logout_url;
 		}
 			
-	}
+	} 
+
+	function mo_openid_login_redirect($username = '', $user = NULL){
+		mo_openid_start_session();
+		if(is_string($username) && $username && is_object($user) && !empty($user->ID) && ($user_id = $user->ID) && isset($_SESSION['mo_login']) && $_SESSION['mo_login']){
+			$_SESSION['mo_login'] = false;
+			wp_set_auth_cookie( $user_id, true );
+			$redirect_url = mo_openid_get_redirect_url();
+			wp_redirect($redirect_url);
+			exit;
+		}
+	}  
 
 if(get_option('mo_openid_logout_redirection_enable') == 1){
 	add_filter( 'logout_url', 'mo_openid_redirect_after_logout',0,1);
@@ -942,8 +1043,8 @@ add_action( 'widgets_init', create_function( '', 'return register_widget( "mo_op
 add_action( 'widgets_init', create_function( '', 'return register_widget( "mo_openid_sharing_hor_wid" );' ) );
 
 add_action( 'init', 'mo_openid_login_validate' );
-add_action( 'wp_enqueue_scripts', 'mo_openid_widget_register_plugin_styles' );
-add_action( 'init', 'mo_openid_start_session' );
-add_action( 'wp_logout', 'mo_openid_end_session' );
+//add_action( 'init', 'mo_openid_start_session' );
+//add_action( 'wp_logout', 'mo_openid_end_session' );
+add_action( 'wp_login', 'mo_openid_login_redirect', 9, 2);
 }
 ?>
